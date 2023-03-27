@@ -4,6 +4,8 @@ import COLORS from "../consts/colors";
 import { View } from "react-native";
 import HomeScreen from "../screens/HomeScreen";
 import CartScreen from "../screens/CartScreen";
+import OrdersScreen from "../screens/OrdersScreen";
+import WishlistScreen from "../screens/WishlistScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -11,9 +13,19 @@ const BottomNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={{
-        style: { height: 55, boderTopWidth: 0, evelation: 0 },
+        style: {
+          height: 55,
+          boderTopWidth: 0,
+          evelation: 0,
+        },
+        tabBarStyle: {
+          backgroundColor: COLORS.orange,
+          borderTopLeftRadius: 10,
+          borderTopRightRadius: 10
+        },
         tabBarShowLabel: false,
-        tabBarActiveTintColor: COLORS.primary,
+        tabBarActiveTintColor: COLORS.black,
+        tabBarInactiveTintColor: COLORS.white,
       }}
     >
       <Tab.Screen
@@ -49,21 +61,21 @@ const BottomNavigator = () => {
                 justifyContent: "center",
                 alignItems: "center",
                 backgroundColor: COLORS.white,
-                borderColor: COLORS.primary,
+                borderColor: COLORS.orange,
                 borderWidth: 2,
                 borderRadius: 30,
                 top: -20,
-                elevation: 5
+                elevation: 5,
               }}
             >
-              <Icon name="search" color={COLORS.primary} size={28} />
+              <Icon name="search" color={COLORS.orange} size={28} />
             </View>
           ),
         }}
       />
       <Tab.Screen
         name="Order"
-        component={HomeScreen}
+        component={OrdersScreen}
         options={{
           headerShown: false,
           tabBarIcon: ({ color }) => (
@@ -73,7 +85,7 @@ const BottomNavigator = () => {
       />
       <Tab.Screen
         name="WishList"
-        component={HomeScreen}
+        component={WishlistScreen}
         options={{
           headerShown: false,
           tabBarIcon: ({ color }) => (

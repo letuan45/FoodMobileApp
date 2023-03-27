@@ -69,10 +69,10 @@ const FoodItem = ({ item, navigation }) => {
 const styles = StyleSheet.create({
   item: {
     flexDirection: "column",
-    height: 180,
+    height: 170,
     width: itemWidth,
     marginHorizontal: 10,
-    marginBottom: 20,
+    marginBottom: 30,
     borderRadius: 15,
     marginTop: 50,
     elevation: 8,
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   imageContainer: {
     alignItems: "center",
     position: "absolute",
-    top: -70,
+    top: -75,
   },
   image: {
     width: 180,
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   },
   discription: {
     marginTop: 85,
-    paddingHorizontal: 20,
+    paddingHorizontal: 14,
   },
   btnWrapper: {
     top: -30,

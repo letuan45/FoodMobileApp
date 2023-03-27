@@ -3,7 +3,7 @@ import CartItem from "./CartItem";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import COLORS from "../../consts/colors";
 
-const CartList = ({ cartItems }) => {
+const CartList = ({ cartItems, onRemoveItem }) => {
   if (!cartItems || cartItems.length === 0) {
     return (
       <View style={styles.empty}>
@@ -16,16 +16,23 @@ const CartList = ({ cartItems }) => {
   }
 
   return (
-    <FlatList
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 80 }}
-      data={cartItems}
-      renderItem={({ item }) => <CartItem item={item} />}
-    />
+    <View style={styles.listContainer}>
+      <FlatList
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 80 }}
+        data={cartItems}
+        renderItem={({ item }) => (
+          <CartItem item={item} onRemoveItem={onRemoveItem} />
+        )}
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  listContainer: {
+    height: 360,
+  },
   empty: {
     marginHorizontal: 20,
     marginVertical: 50,

@@ -1,59 +1,51 @@
-import { View, Text } from "react-native";
+import { View, Text, Image, FlatList } from "react-native";
+import COLORS from "../../consts/colors";
 import FoodItem from "./FoodItem";
+import { ActivityIndicator } from "react-native-paper";
 
-const DUMMY_PRODUCTS = [
-  {
-    id_item: 1,
-    name: "Burger Size L",
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-    price: 100000,
-    quantity: 20,
-  },
-  {
-    id_item: 2,
-    name: "Burger Size L",
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-    price: 100000,
-    quantity: 20,
-  },
-  {
-    id_item: 3,
-    name: "Burger Size L",
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-    price: 100000,
-    quantity: 20,
-  },
-  {
-    id_item: 4,
-    name: "Burger Size L",
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-    price: 100000,
-    quantity: 20,
-  },
-];
-
-const ShopList = ({navigation}) => {
+const ShopList = ({ navigation, items, isLoading }) => {
   //Call api
-  const products = DUMMY_PRODUCTS;
-  if (!products && products.length === 0) {
+  const products = items;
+
+  if (isLoading) {
     return (
-      <View>
-        <Text style={{ fontSize: 20, textAlign: "center" }}>
-          Không có sản phẩm nào...
+      <View style={{ marginTop: 40 }}>
+        <ActivityIndicator
+          size="large"
+          animating={true}
+          color={COLORS.primary}
+        />
+      </View>
+    );
+  }
+
+  if (!products || products.length === 0) {
+    return (
+      <View style={{ alignItems: "center" }}>
+        <Image
+          source={require("../../assets/images/no-results.png")}
+          style={{ width: 100, height: 100, marginTop: 50 }}
+        />
+        <Text style={{ fontSize: 18, marginTop: 10, color: COLORS.grey }}>
+          Không tìm thấy kết quả bạn muốn.
         </Text>
       </View>
     );
   }
 
   return (
-    <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-      {products.map((item) => (
+    <View style={{ flexDirection: "row", flexWrap: "wrap", height: 1500}}>
+      <FlatList
+        data={products}
+        numColumns={2}
+        keyExtractor={(item) => item["id_item"]}
+        renderItem={({ item }) => (
+          <FoodItem item={item} navigation={navigation} />
+        )}
+      />
+      {/* {products.map((item) => (
         <FoodItem item={item} key={item["id_item"]} navigation={navigation} />
-      ))}
+      ))} */}
     </View>
   );
 };

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   SafeAreaView,
   Text,
@@ -6,6 +7,8 @@ import {
   TouchableHighlight,
   Image,
   ScrollView,
+  TouchableOpacity,
+  ToastAndroid,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import Categories from "../components/Categories";
@@ -13,8 +16,64 @@ import Logo from "../components/UI/Logo";
 import COLORS from "../consts/colors";
 import PrimaryButtonSmall from "../components/UI/PrimaryButtonSmall";
 import ShopList from "../components/Shop/ShopList";
+import useAxios from "../hooks/useAxios";
+import httpClient from "../utils/axiosInstance";
+import axios from "axios";
 
-const HomeScreen = ({navigation}) => {
+const DUMMY_PRODUCTS = [
+  {
+    id_item: 1,
+    name: "Burger Size L",
+    image:
+      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
+    price: 100000,
+    quantity: 20,
+  },
+  {
+    id_item: 2,
+    name: "Burger Size L",
+    image:
+      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
+    price: 100000,
+    quantity: 20,
+  },
+  {
+    id_item: 3,
+    name: "Burger Size L",
+    image:
+      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
+    price: 100000,
+    quantity: 20,
+  },
+  {
+    id_item: 4,
+    name: "Burger Size L",
+    image:
+      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
+    price: 100000,
+    quantity: 20,
+  },
+];
+
+const HomeScreen = ({ navigation }) => {
+  const [renderProducts, setRenderProducts] = useState([]);
+  let getItemsURL = "/items";
+  const {
+    response: productsRes,
+    isLoading: productsIsLoading,
+    error: productsError,
+  } = useAxios({
+    axiosInstance: httpClient,
+    method: "GET",
+    url: getItemsURL,
+  });
+
+  useEffect(() => {
+    if(productsRes) {
+      setRenderProducts(productsRes.itemList);
+    }
+  }, [productsRes, productsError]);
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -27,12 +86,16 @@ const HomeScreen = ({navigation}) => {
             </View>
             <Text style={styles.headerHint}>Hãy chọn món ăn bạn muốn</Text>
           </View>
-          <TouchableHighlight>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("AccountScreen");
+            }}
+          >
             <Image
               style={styles.userImage}
               source={require("../assets/icons/user.png")}
             />
-          </TouchableHighlight>
+          </TouchableOpacity>
         </View>
         <TouchableHighlight style={styles.searchContainer}>
           <View>
@@ -62,7 +125,11 @@ const HomeScreen = ({navigation}) => {
           </View>
         </View>
         <Text style={styles.menuHeader}>Thực đơn</Text>
-        <ShopList navigation={navigation}/>
+        <ShopList
+          navigation={navigation}
+          items={renderProducts}
+          isLoading={productsIsLoading}
+        />
       </ScrollView>
     </SafeAreaView>
   );
@@ -149,8 +216,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 600,
     marginTop: 18,
-    marginHorizontal: 20
-  }
+    marginHorizontal: 20,
+  },
 });
 
 export default HomeScreen;

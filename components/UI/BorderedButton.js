@@ -1,19 +1,12 @@
 import { Text, TouchableOpacity, View } from "react-native";
 import { StyleSheet } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
 import COLORS from "../../consts/colors";
 
-const PrimaryButton = ({ title, noOpacity, isLoading, onPress = () => {} }) => {
+const BorderedButton = ({ title, onPress = () => {} }) => {
   return (
-    <TouchableOpacity activeOpacity={noOpacity ? 1 : 0.8} onPress={onPress}>
+    <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
       <View style={styles.btnContainer}>
-        <Text style={styles.btnContent}>
-          {isLoading ? (
-            <ActivityIndicator animating={true} color={COLORS.white} />
-          ) : (
-            title
-          )}
-        </Text>
+        <Text style={styles.btnContent}>{title}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -21,9 +14,11 @@ const PrimaryButton = ({ title, noOpacity, isLoading, onPress = () => {} }) => {
 
 const styles = StyleSheet.create({
   btnContainer: {
-    backgroundColor: COLORS.primaryDark,
+    backgroundColor: "transparent",
     height: 60,
     borderRadius: 30,
+    borderWidth: 2,
+    borderColor: COLORS.primary,
     elevation: 4,
     justifyContent: "center",
     alignContent: "center",
@@ -36,4 +31,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PrimaryButton;
+export default BorderedButton;

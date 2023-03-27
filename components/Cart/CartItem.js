@@ -2,8 +2,12 @@ import { View, StyleSheet, Image, Text, Pressable } from "react-native";
 import COLORS from "../../consts/colors";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-const CartItem = ({ item }) => {
+const CartItem = ({ item, onRemoveItem }) => {
   const price = Number(item.price).toLocaleString("en");
+
+  const handleRemoveItem = () => {
+    onRemoveItem(item["id_item"]);
+  };
 
   return (
     <View style={styles.item}>
@@ -50,7 +54,7 @@ const CartItem = ({ item }) => {
             </Pressable>
           </View>
         </View>
-        <Pressable style={styles.removeBtn}>
+        <Pressable style={styles.removeBtn} onPress={handleRemoveItem}>
           <Icon name="cancel" size={26} color={COLORS.red} />
         </Pressable>
       </View>
@@ -115,8 +119,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   removeBtn: {
-    flex: 1
-  }
+    flex: 1,
+  },
 });
 
 export default CartItem;

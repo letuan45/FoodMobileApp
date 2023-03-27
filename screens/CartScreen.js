@@ -1,8 +1,16 @@
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  View,
+} from "react-native";
 import CartList from "../components/Cart/CartList";
 import Logo from "../components/UI/Logo";
 import PrimaryButton from "../components/UI/PrimaryButton";
 import COLORS from "../consts/colors";
+import CustomDialog from "../components/UI/CustomDialog";
 
 const DUMMY_CART = [
   {
@@ -79,22 +87,77 @@ const DUMMY_CART = [
   },
 ];
 
-const CartScreen = () => {
+const CartScreen = ({ navigation }) => {
+  const [dialogIsShown, setDialogIsShown] = useState(false);
+  const [removeItem, setRemoveItem] = useState(0)
   const cart = DUMMY_CART;
 
+  const removeItemHandler = (itemId) => {
+    //Xử lý logic
+    console.log("remove", itemId);
+
+    //Xử lý xong, đóng dialog
+    setDialogIsShown(false);
+  };
+
+  //Show Dialog
+  const openDialogHandler = (itemId) => {
+    setDialogIsShown(true);
+    setRemoveItem(itemId);
+  };
+
+  const closeDialogHandler = () => {
+    setDialogIsShown(false);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Dialog xóa item */}
+      {dialogIsShown && (
+        <CustomDialog
+          title="Thông báo"
+          content="Bạn có chắc chắn muốn xóa món này khỏi giỏ hàng?"
+          itemId={removeItem}
+          onClose={closeDialogHandler}
+          onAgree={removeItemHandler}
+        />
+      )}
       <View style={styles.logoWrapper}>
         <Logo />
       </View>
       <Text style={styles.cartHeader}>Giỏ hàng của bạn</Text>
-      {(!cart && cart.length) > 0 && (
-        <View style={styles.addToCartBtn}>
-          <PrimaryButton title="Thanh toán" onPress={() => {}} />
+      <CartList cartItems={cart} onRemoveItem={openDialogHandler} />
+      {(cart && cart.length) > 0 && (
+        <View style={styles.summaryWrapper}>
+          <View style={styles.summaryItem}>
+            <Text style={styles.summaryText}>Tổng: </Text>
+            <Text style={styles.summaryText}>500,000 VND </Text>
+          </View>
+          <View style={styles.summaryItem}>
+            <Text style={styles.summaryText}>Giảm giá: </Text>
+            <Text style={styles.summaryText}>0 VND </Text>
+          </View>
+          <View style={styles.summaryPriceWrapper}>
+            <Text style={styles.summaryPrice}>Tổng tiền: </Text>
+            <Text style={styles.summaryPrice}>500,000 VND </Text>
+          </View>
+          <View>
+            <PrimaryButton
+              title="Thanh toán"
+              onPress={() => {
+                ToastAndroid.showWithGravityAndOffset(
+                  "Toast xuất hiện",
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50
+                );
+                navigation.navigate("CheckoutScreen");
+              }}
+            />
+          </View>
         </View>
       )}
-      <CartList cartItems={cart} />
     </SafeAreaView>
   );
 };
@@ -113,14 +176,37 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     fontSize: 26,
     fontWeight: 600,
-    marginBottom: 12
+    marginBottom: 8,
   },
-  addToCartBtn: {
-    position: "absolute",
-    bottom: 40,
-    width: "100%",
+  summaryWrapper: {
+    backgroundColor: COLORS.fadeYellow,
+    elevation: 5,
+    marginHorizontal: 20,
+    marginVertical: 20,
     paddingHorizontal: 20,
-    zIndex: 10,
+    paddingVertical: 24,
+    borderRadius: 12,
+  },
+  summaryItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  summaryText: {
+    fontSize: 20,
+  },
+  summaryPrice: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: COLORS.green,
+    marginBottom: 8,
+  },
+  summaryPriceWrapper: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingTop: 10,
+    marginTop: 10,
+    borderTopWidth: 1,
+    borderStyle: "dashed",
   },
 });
 

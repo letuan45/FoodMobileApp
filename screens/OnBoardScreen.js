@@ -23,7 +23,7 @@ const OnBoardScreen = ({ navigation }) => {
         </Text>
         <PrimaryButton
           title="Bắt đầu"
-          onPress={() => navigation.navigate("Home")}
+          onPress={() => navigation.navigate("LoginScreen")}
         />
       </View>
     </SafeAreaView>

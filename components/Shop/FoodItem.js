@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Dimensions,
   Image,
@@ -6,24 +6,46 @@ import {
   StyleSheet,
   Text,
   View,
+  ToastAndroid,
 } from "react-native";
 import COLORS from "../../consts/colors";
-import AddToCartButton from "../UI/AddToCartButton";
+import AddToCartButton from "../UI/Buttons/AddToCartButton";
+import { useDispatch, useSelector } from "react-redux";
+import { cartActions } from "../../store";
+import { addToCart } from "../../services/CartService";
+import ShowToast from "../../utils/ShowToast";
 
 const { width } = Dimensions.get("screen");
 const itemWidth = width / 2 - 20;
 
 const FoodItem = ({ item, navigation }) => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
   const itemId = item["id_item"];
   const price = Number(item.price).toLocaleString("en");
+  const { addToCartRes, addToCartErr, addToCartIsLoading, callAddToCart } =
+    addToCart(itemId);
+
+  useEffect(() => {
+    if (addToCartRes) {
+      ShowToast(addToCartRes.message);
+      dispatch(cartActions.addTocart({ ...item, amount: 1 }));
+    } else if (addToCartErr) {
+      ShowToast(addToCartErr.data.message);
+    }
+  }, [addToCartRes, addToCartErr]);
 
   const addToCartHandler = () => {
-    console.log("add to cart");
+    if (!user) {
+      ShowToast("Bạn phải đăng nhập để tương tác!");
+      return;
+    }
+    callAddToCart(1); //Amount: 1
   };
 
   const toDetailHandler = () => {
     navigation.navigate("DetailScreen", itemId);
-  }
+  };
 
   return (
     <Pressable onPress={toDetailHandler}>
@@ -59,7 +81,10 @@ const FoodItem = ({ item, navigation }) => {
           </Text>
         </View>
         <View style={styles.btnWrapper}>
-          <AddToCartButton onPress={addToCartHandler} />
+          <AddToCartButton
+            onPress={addToCartHandler}
+            isLoading={addToCartIsLoading}
+          />
         </View>
       </View>
     </Pressable>
@@ -72,16 +97,16 @@ const styles = StyleSheet.create({
     height: 170,
     width: itemWidth,
     marginHorizontal: 10,
-    marginBottom: 30,
+    marginBottom: 50,
     borderRadius: 15,
-    marginTop: 50,
+    marginTop: 55,
     elevation: 8,
     backgroundColor: COLORS.fadeYellow,
   },
   imageContainer: {
     alignItems: "center",
     position: "absolute",
-    top: -75,
+    top: -85,
   },
   image: {
     width: 180,
@@ -98,4 +123,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FoodItem;
+export default React.memo(FoodItem);

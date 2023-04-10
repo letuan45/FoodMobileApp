@@ -1,6 +1,6 @@
 import { Text, TouchableOpacity, View } from "react-native";
 import { StyleSheet } from "react-native";
-import COLORS from "../../consts/colors";
+import COLORS from "../../../consts/colors";
 
 const PrimaryButtonSmall = ({ title, onPress = () => {} }) => {
   return (

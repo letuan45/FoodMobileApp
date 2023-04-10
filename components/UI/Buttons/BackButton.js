@@ -1,7 +1,7 @@
 import { Text, TouchableOpacity, View } from "react-native";
 import { StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import COLORS from "../../consts/colors";
+import COLORS from "../../../consts/colors";
 
 const BackButton = ({ navigation }) => {
   return (

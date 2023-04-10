@@ -1,7 +1,9 @@
 import { View, Text, Image } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
-import COLORS from "../consts/colors";
+import COLORS from "../../../consts/colors";
+import httpClient from "../../../utils/axiosInstance";
+import useAxios from "../../../hooks/useAxios";
 
 const DUMMY_CATEGORIES = [
   {
@@ -34,34 +36,53 @@ const icons = [
   <View>
     <Image
       style={{ width: 40, height: 40 }}
-      source={require("../assets/icons/burger.png")}
+      source={require("../../../assets/icons/burger.png")}
     />
   </View>,
   <Image
     style={{ width: 40, height: 40 }}
-    source={require("../assets/icons/drink.png")}
+    source={require("../../../assets/icons/drink.png")}
   />,
   <Image
     style={{ width: 40, height: 40 }}
-    source={require("../assets/icons/cupcake.png")}
+    source={require("../../../assets/icons/cupcake.png")}
   />,
   <Image
     style={{ width: 40, height: 40 }}
-    source={require("../assets/icons/onion-rings.png")}
+    source={require("../../../assets/icons/onion-rings.png")}
   />,
   <Image
     style={{ width: 40, height: 40 }}
-    source={require("../assets/icons/pizza.png")}
+    source={require("../../../assets/icons/pizza.png")}
   />,
   <Image
     style={{ width: 40, height: 40 }}
-    source={require("../assets/icons/hot-dog.png")}
+    source={require("../../../assets/icons/hot-dog.png")}
   />,
 ];
 
-const Categories = () => {
+const getCateURL = "/types";
+
+const Categories = ({ onChangeCate }) => {
+  const { response: cateRes, error: cateErr } = useAxios({
+    axiosInstance: httpClient,
+    method: "GET",
+    url: getCateURL,
+  });
   const [activeCateIndex, setActiveCateIndex] = useState(0);
-  let Categories = DUMMY_CATEGORIES;
+  let Categories = [];
+
+  useEffect(() => {
+    onChangeCate(activeCateIndex);
+  }, [activeCateIndex]);
+
+  if (cateErr) {
+    return <Text>Lỗi lấy danh mục món ăn...</Text>;
+  }
+  if (cateRes) {
+    Categories = cateRes;
+  }
+
   Categories = Categories.map((item, index) => {
     return { ...item, image: icons[index] };
   });
@@ -100,15 +121,15 @@ const Categories = () => {
         </TouchableOpacity>
         {Categories.map((item) => (
           <TouchableOpacity
-            key={item["id_item"]}
+            key={item["id_type"]}
             activeOpacity={0.8}
-            onPress={handleChangeCate.bind(this, item["id_item"])}
+            onPress={handleChangeCate.bind(this, item["id_type"])}
           >
             <View
               style={{
                 backgroundColor:
-                  item["id_item"] === activeCateIndex
-                    ? COLORS.primary
+                  item["id_type"] === activeCateIndex
+                    ? COLORS.green
                     : COLORS.white,
                 ...styles.cateItem,
               }}
@@ -116,7 +137,7 @@ const Categories = () => {
               <Text
                 style={{
                   color:
-                    activeCateIndex === item["id_item"]
+                    activeCateIndex === item["id_type"]
                       ? COLORS.white
                       : COLORS.black,
                   ...styles.cateText,

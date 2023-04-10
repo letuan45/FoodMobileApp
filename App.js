@@ -11,6 +11,9 @@ import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import LoginSuccessScreen from "./screens/LoginSuccessScreen";
 import AccountScreen from "./screens/AccountScreen";
+import { Provider } from "react-redux";
+import store from "./store";
+import CheckoutSuccessScreen from "./screens/CheckoutSuccessScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -18,22 +21,31 @@ export default function App() {
   const isDarkMode = useColorScheme() === "dark";
 
   return (
-    <NavigationContainer>
-      <StatusBar style={isDarkMode ? "light-content" : "default"} />
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="BoardScreen" component={OnBoardScreen} />
-        <Stack.Screen name="LoginScreen" component={BottomNavigator} />
-        <Stack.Screen name="Home" component={BottomNavigator} />
-        <Stack.Screen name="DetailScreen" component={DetailScreen} />
-        <Stack.Screen name="CheckoutScreen" component={CheckoutScreen} />
-        <Stack.Screen name="OrderDetailScreen" component={OrderDetailScreen} />
-        <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-        <Stack.Screen
-          name="LoginSuccessScreen"
-          component={LoginSuccessScreen}
-        />
-        <Stack.Screen name="AccountScreen" component={AccountScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <StatusBar style={isDarkMode ? "light-content" : "default"} />
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="BoardScreen" component={OnBoardScreen} />
+          <Stack.Screen name="Home" component={BottomNavigator} />
+          <Stack.Screen name="LoginScreen" component={LoginScreen} />
+          <Stack.Screen name="DetailScreen" component={DetailScreen} />
+          <Stack.Screen name="CheckoutScreen" component={CheckoutScreen} />
+          <Stack.Screen
+            name="OrderDetailScreen"
+            component={OrderDetailScreen}
+          />
+          <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+          <Stack.Screen
+            name="LoginSuccessScreen"
+            component={LoginSuccessScreen}
+          />
+          <Stack.Screen name="AccountScreen" component={AccountScreen} />
+          <Stack.Screen
+            name="CheckoutSuccessScreen"
+            component={CheckoutSuccessScreen}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }

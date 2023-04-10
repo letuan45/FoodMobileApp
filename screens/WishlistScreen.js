@@ -1,80 +1,20 @@
 import React from "react";
 import { SafeAreaView, StyleSheet, View, Text } from "react-native";
-import Logo from "../components/UI/Logo";
+import Logo from "../components/UI/Decorations/Logo";
 import EmpyWishlist from "../components/WishList/EmpyWishlist";
 import Wishlist from "../components/WishList/Wishlist";
 import COLORS from "../consts/colors";
+import RequireLoginScreen from "./RequireLoginScreen";
+import { useSelector} from "react-redux";
 
-const DUMMY_PRODUCTS = [
-  {
-    id_item: 1,
-    name: "Burger Size L",
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-    price: 100000,
-    quantity: 20,
-  },
-  {
-    id_item: 2,
-    name: "Burger Size L",
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-    price: 100000,
-    quantity: 20,
-  },
-  {
-    id_item: 3,
-    name: "Burger Size L",
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-    price: 100000,
-    quantity: 20,
-  },
-  {
-    id_item: 4,
-    name: "Burger Size L",
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-    price: 100000,
-    quantity: 20,
-  },
-  {
-    id_item: 5,
-    name: "Burger Size L",
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-    price: 100000,
-    quantity: 20,
-  },
-  {
-    id_item: 6,
-    name: "Burger Size L",
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-    price: 100000,
-    quantity: 20,
-  },
-  {
-    id_item: 7,
-    name: "Burger Size L",
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-    price: 100000,
-    quantity: 20,
-  },
-  {
-    id_item: 8,
-    name: "Burger Size L",
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-    price: 100000,
-    quantity: 20,
-  },
-];
-
-const WishlistScreen = () => {
-  const wishlistItems = DUMMY_PRODUCTS;
+const WishlistScreen = ({navigation}) => {
+  const wishlistItems = useSelector((state) => state.wishList.items);
   let content;
+  const user = useSelector(state => state.auth.user);
+
+  if (!user) {
+    return <RequireLoginScreen navigation={navigation} />;
+  }
 
   if (!wishlistItems || wishlistItems.length === 0) {
     content = <EmpyWishlist />;

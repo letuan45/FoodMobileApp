@@ -1,9 +1,9 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
-import FormContainer from "../components/FormContainer";
+import FormContainer from "../components/UI/Interactors/FormContainer";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import COLORS from "../consts/colors";
-import PrimaryButton from "../components/UI/PrimaryButton";
+import PrimaryButton from "../components/UI/Buttons/PrimaryButton";
 
 const LoginSuccessScreen = ({ navigation }) => {
   return (

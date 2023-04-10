@@ -1,11 +1,11 @@
 import React, { Fragment } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
-import FormContainer from "../components/FormContainer";
+import FormContainer from "../components/UI/Interactors/FormContainer";
 import { Formik } from "formik";
-import CustomTextInput from "../components/UI/CustomTextInput";
+import CustomTextInput from "../components/UI/Inputs/CustomTextInput";
 import { RegisterSchema } from "../utils/validation";
-import CustomLongInput from "../components/UI/CustomLongInput";
-import PrimaryButton from "../components/UI/PrimaryButton";
+import CustomLongInput from "../components/UI/Inputs/CustomLongInput";
+import PrimaryButton from "../components/UI/Buttons/PrimaryButton";
 
 const initialLoginValues = {
   username: "",
@@ -129,7 +129,7 @@ const RegisterScreen = ({ navigation }) => {
                       errors.address && touched.address ? errors.address : null
                     }
                   />
-                  <View style={{ height: 250 }} />
+                  <View style={{ height: 200 }} />
                   <View style={styles.btnGroup}></View>
                   <View style={styles.btnWrapper}>
                     <PrimaryButton
@@ -152,7 +152,6 @@ const styles = StyleSheet.create({
     height: 600,
   },
   btnWrapper: {
-    marginTop: 20,
     position: "absolute",
     width: "100%",
     bottom: 100,

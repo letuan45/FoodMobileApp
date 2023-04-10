@@ -6,25 +6,62 @@ import HomeScreen from "../screens/HomeScreen";
 import CartScreen from "../screens/CartScreen";
 import OrdersScreen from "../screens/OrdersScreen";
 import WishlistScreen from "../screens/WishlistScreen";
+import variables from "../consts/variables";
+import { getCart } from "../services/CartService";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { cartActions, wishListActions} from "../store";
+import CartLogo from "../components/UI/Decorations/CartLogo";
+import { getWishlist } from "../services/WishlistService";
+import ShowToast from "../utils/ShowToast";
 
 const Tab = createBottomTabNavigator();
 
 const BottomNavigator = () => {
+  const dispatch = useDispatch();
+  const { getCartRes, getCartErr, callGetCart } = getCart();
+  const { wishlistRes, wishlistError, callGetWishlist } = getWishlist();
+  const user = useSelector((state) => state.auth.user);
+
+  //Lấy Cart, Wishlish sau khi đăng nhập
+  useEffect(() => {
+    if (user) {
+      callGetCart();
+      callGetWishlist();
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (wishlistRes) {
+      dispatch(wishListActions.replaceWishList({ items: wishlistRes }));
+    } else if(wishlistError) {
+      ShowToast(wishlistError.data.message);
+    }
+  }, [wishlistRes, wishlistError]);
+
+  useEffect(() => {
+    if (getCartRes) {
+      dispatch(cartActions.replaceCart({ items: getCartRes.itemList }));
+    } else if (getCartErr) {
+      ShowToast(getCartErr.data.message);
+    }
+  }, [getCartRes, getCartErr]);
+
   return (
     <Tab.Navigator
       screenOptions={{
         style: {
-          height: 55,
+          height: variables.bottomNavigateHeight,
           boderTopWidth: 0,
           evelation: 0,
         },
         tabBarStyle: {
           backgroundColor: COLORS.orange,
           borderTopLeftRadius: 10,
-          borderTopRightRadius: 10
+          borderTopRightRadius: 10,
         },
         tabBarShowLabel: false,
-        tabBarActiveTintColor: COLORS.black,
+        tabBarActiveTintColor: COLORS.greenDark,
         tabBarInactiveTintColor: COLORS.white,
       }}
     >
@@ -43,9 +80,7 @@ const BottomNavigator = () => {
         component={CartScreen}
         options={{
           headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <Icon name="shopping-cart" color={color} size={28} />
-          ),
+          tabBarIcon: ({ color }) => <CartLogo color={color} />,
         }}
       />
       <Tab.Screen

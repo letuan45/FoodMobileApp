@@ -7,9 +7,9 @@ import {
   Dimensions,
   Text,
 } from "react-native";
-import COLORS from "../consts/colors";
-import Logo from "../components/UI/Logo";
-import BackButton from "./UI/BackButton";
+import COLORS from "../../../consts/colors";
+import Logo from "../Decorations/Logo";
+import BackButton from "../Buttons/BackButton";
 
 const FormContainer = (props) => {
   return (
@@ -22,7 +22,7 @@ const FormContainer = (props) => {
       <View style={styles.bgContainer}>
         <ImageBackground
           style={styles.image}
-          source={require("../assets/images/background_2.jpg")}
+          source={require("../../../assets/images/background_2.jpg")}
         >
           <View style={styles.backDrop} />
           <View style={styles.contentContainer}>

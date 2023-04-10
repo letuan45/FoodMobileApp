@@ -1,101 +1,46 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   SafeAreaView,
   StyleSheet,
   Text,
-  ToastAndroid,
   View,
 } from "react-native";
 import CartList from "../components/Cart/CartList";
-import Logo from "../components/UI/Logo";
-import PrimaryButton from "../components/UI/PrimaryButton";
+import Logo from "../components/UI/Decorations/Logo";
+import PrimaryButton from "../components/UI/Buttons/PrimaryButton";
 import COLORS from "../consts/colors";
-import CustomDialog from "../components/UI/CustomDialog";
-
-const DUMMY_CART = [
-  {
-    id_item: 1,
-    name: "Burger Size L Burger Size L Burger Size L",
-    price: 100000,
-    amount: 1,
-    quantity: 12,
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-  },
-  {
-    id_item: 2,
-    name: "Burger Size L",
-    price: 100000,
-    amount: 1,
-    quantity: 12,
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-  },
-  {
-    id_item: 3,
-    name: "Burger Size L Burger Size L Burger Size L",
-    price: 100000,
-    amount: 1,
-    quantity: 12,
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-  },
-  {
-    id_item: 4,
-    name: "Burger Size L",
-    price: 100000,
-    amount: 1,
-    quantity: 12,
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-  },
-  {
-    id_item: 5,
-    name: "Burger Size L Burger Size L Burger Size L",
-    price: 100000,
-    amount: 1,
-    quantity: 12,
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-  },
-  {
-    id_item: 6,
-    name: "Burger Size L",
-    price: 100000,
-    amount: 1,
-    quantity: 12,
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-  },
-  {
-    id_item: 7,
-    name: "Burger Size L Burger Size L Burger Size L",
-    price: 100000,
-    amount: 1,
-    quantity: 12,
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-  },
-  {
-    id_item: 8,
-    name: "Burger Size L",
-    price: 100000,
-    amount: 1,
-    quantity: 12,
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-  },
-];
+import CustomDialog from "../components/UI/Interactors/CustomDialog";
+import RequireLoginScreen from "./RequireLoginScreen";
+import { useSelector, useDispatch} from "react-redux";
+import { removeCartItem } from "../services/CartService";
+import { cartActions } from "../store";
+import ShowToast from "../utils/ShowToast";
 
 const CartScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
   const [dialogIsShown, setDialogIsShown] = useState(false);
-  const [removeItem, setRemoveItem] = useState(0)
-  const cart = DUMMY_CART;
+  const [removeItem, setRemoveItem] = useState(0);
+  const user = useSelector((state) => state.auth.user);
+  const renderCart = useSelector((state) => state.cart.items);
+  const { removeCartItemRes, removeCartItemErr, callRemoveCartItem } =
+    removeCartItem();
+
+  useEffect(() => {
+    if (removeCartItemRes) {
+      ShowToast(removeCartItemRes.message);
+      dispatch(cartActions.removeEntireItem({id: removeItem}))
+    } else if (removeCartItemErr) {
+      ShowToast(removeCartItemErr.data.message);
+    }
+  }, [removeCartItemRes, removeCartItemErr]);
+
+  if (!user) {
+    return <RequireLoginScreen navigation={navigation} />;
+  }
 
   const removeItemHandler = (itemId) => {
     //Xử lý logic
-    console.log("remove", itemId);
-
+    callRemoveCartItem(itemId);
     //Xử lý xong, đóng dialog
     setDialogIsShown(false);
   };
@@ -109,6 +54,12 @@ const CartScreen = ({ navigation }) => {
   const closeDialogHandler = () => {
     setDialogIsShown(false);
   };
+
+  const totalPrice =
+    renderCart.length > 0
+      ? renderCart.reduce((acc, item) => acc + item.price * item.amount, 0)
+      : 0;
+  const renderTotalPrice = Number(totalPrice).toLocaleString("en");
 
   return (
     <SafeAreaView style={styles.container}>
@@ -126,12 +77,12 @@ const CartScreen = ({ navigation }) => {
         <Logo />
       </View>
       <Text style={styles.cartHeader}>Giỏ hàng của bạn</Text>
-      <CartList cartItems={cart} onRemoveItem={openDialogHandler} />
-      {(cart && cart.length) > 0 && (
+      <CartList cartItems={renderCart} onRemoveItem={openDialogHandler} />
+      {(renderCart && renderCart.length) > 0 && (
         <View style={styles.summaryWrapper}>
           <View style={styles.summaryItem}>
             <Text style={styles.summaryText}>Tổng: </Text>
-            <Text style={styles.summaryText}>500,000 VND </Text>
+            <Text style={styles.summaryText}>{renderTotalPrice} VND </Text>
           </View>
           <View style={styles.summaryItem}>
             <Text style={styles.summaryText}>Giảm giá: </Text>
@@ -139,19 +90,12 @@ const CartScreen = ({ navigation }) => {
           </View>
           <View style={styles.summaryPriceWrapper}>
             <Text style={styles.summaryPrice}>Tổng tiền: </Text>
-            <Text style={styles.summaryPrice}>500,000 VND </Text>
+            <Text style={styles.summaryPrice}>{renderTotalPrice} VND </Text>
           </View>
           <View>
             <PrimaryButton
               title="Thanh toán"
               onPress={() => {
-                ToastAndroid.showWithGravityAndOffset(
-                  "Toast xuất hiện",
-                  ToastAndroid.LONG,
-                  ToastAndroid.BOTTOM,
-                  25,
-                  50
-                );
                 navigation.navigate("CheckoutScreen");
               }}
             />

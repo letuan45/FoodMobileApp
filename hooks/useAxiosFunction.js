@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { getStringData } from "../services/useAsyncStorage";
 
 const useAxiosFunction = () => {
   const [response, setResponse] = useState(null);
@@ -8,7 +9,7 @@ const useAxiosFunction = () => {
 
   const axiosFetch = useCallback(async (configObj) => {
     const { axiosInstance, method, url, requestConfig = {} } = configObj;
-    const token = null; // Chổ này sửa sau
+    const token = await getStringData("token");
     try {
       setLoading(true);
       const ctrl = new AbortController();

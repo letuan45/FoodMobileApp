@@ -1,13 +1,16 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import COLORS from "../consts/colors";
 import { Formik } from "formik";
-import CustomTextInput from "../components/UI/CustomTextInput";
+import CustomTextInput from "../components/UI/Inputs/CustomTextInput";
 import { Dimensions } from "react-native";
-import PrimaryButton from "../components/UI/PrimaryButton";
-import BorderedButton from "../components/UI/BorderedButton";
+import PrimaryButton from "../components/UI/Buttons/PrimaryButton";
+import BorderedButton from "../components/UI/Buttons/BorderedButton";
 import { SignupSchema } from "../utils/validation";
-import FormContainer from "../components/FormContainer";
+import FormContainer from "../components/UI/Interactors/FormContainer";
+import { LoginAuth } from "../services/Authentication";
+import useAuth from "../hooks/use-auth";
+import ShowToast from "../utils/ShowToast";
 
 const initialLoginValues = {
   username: "",
@@ -15,17 +18,35 @@ const initialLoginValues = {
 };
 
 const LoginScreen = ({ navigation }) => {
+  const { loginHandler } = useAuth();
+  const { loginResponse, loginError, loginIsLoading, callLogin } = LoginAuth();
+
   const handleSubmitLogin = (values) => {
-    console.log(values);
-    navigation.navigate("Home");
+    // Xử lý login
+    callLogin(values);
   };
+
+  useEffect(() => {
+    if (loginResponse) {
+      ShowToast(loginResponse.message);
+      const { userInfo: user, expireTime } = loginResponse;
+      //Tính thời gian expired và lưu vào bộ nhớ thiết bị
+      const expireTimeData = new Date(new Date().getTime() + expireTime * 1000);
+      loginHandler(loginResponse.token, expireTimeData.toISOString(), {
+        ...user,
+      });
+      navigation.navigate("Home");
+    } else if (loginError) {
+      ShowToast(loginError.data.message);
+    }
+  }, [loginResponse, loginError]);
 
   const handleToLogin = () => {
     navigation.navigate("RegisterScreen");
   };
 
   return (
-    <FormContainer header="Đăng nhập" navigation={navigation}>
+    <FormContainer header="Đăng nhập" navigation={navigation} hasBackButton>
       <View>
         <Formik
           initialValues={initialLoginValues}
@@ -72,13 +93,14 @@ const LoginScreen = ({ navigation }) => {
                   <PrimaryButton
                     title="Đăng nhập"
                     onPress={handleSubmit}
+                    isLoading={loginIsLoading}
                   />
                 </View>
                 <TouchableOpacity style={styles.forgetPassWrapper}>
                   <Text style={styles.forgetPassword}>Quên mật khẩu</Text>
                 </TouchableOpacity>
                 <View style={styles.btnWrapper}>
-                  <BorderedButton title="Đăng ký" onPress={handleToLogin} />
+                  <BorderedButton title="Tới đăng ký" onPress={handleToLogin} />
                 </View>
               </View>
             </Fragment>

@@ -1,13 +1,53 @@
-import React from "react";
-import { SafeAreaView, StyleSheet, Text, View, Image, Pressable } from "react-native";
-import BackButton from "../components/UI/BackButton";
-import PrimaryButton from "../components/UI/PrimaryButton";
+import React, { useEffect } from "react";
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Pressable,
+} from "react-native";
+import BackButton from "../components/UI/Buttons/BackButton";
+import PrimaryButton from "../components/UI/Buttons/PrimaryButton";
 import COLORS from "../consts/colors";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { useSelector, useDispatch } from "react-redux";
+import { authActions, cartActions } from "../store";
+import { LogoutAuth } from "../services/Authentication";
+import ShowToast from "../utils/ShowToast";
 
 const userImage = require("../assets/icons/user.png");
 
 const AccountScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+
+  const { logoutResponse, logoutError, logoutIsLoading, callLogout } =
+    LogoutAuth();
+
+  const handleLogout = () => {
+    callLogout();
+  };
+
+  useEffect(() => {
+    if (logoutResponse) {
+      // Gọi dispatch cho redux
+      dispatch(authActions.logout());
+      dispatch(cartActions.clearCart());
+
+      // Quay về Home và báo Toast
+      ShowToast(logoutResponse.message);
+      navigation.navigate("Home");
+      return;
+    } else if (logoutError) {
+      ShowToast(logoutError.data.message);
+    }
+  }, [logoutResponse, logoutError, logoutIsLoading]);
+
+  if (!user) {
+    navigation.navigate("Home");
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.backDrop} />
@@ -27,41 +67,35 @@ const AccountScreen = ({ navigation }) => {
             fontWeight: 600,
           }}
         >
-          Phan Tấn Trung
+          {user.name}
         </Text>
         <View>
-          <View style={styles.infoItem}>
-            <Icon name="cake" size={28} color={COLORS.green} />
-            <Text style={styles.infor}>Ngày sinh: 01/01/2001</Text>
-          </View>
           <View style={{ ...styles.infoItem, borderTopWidth: 0 }}>
             <Icon name="account-circle" size={28} color={COLORS.green} />
-            <Text style={styles.infor}>Giới tính: Nam</Text>
+            <Text style={styles.infor}>Id User: #{user.id_customer}</Text>
           </View>
           <View style={{ ...styles.infoItem, borderTopWidth: 0 }}>
             <Icon name="mail" size={28} color={COLORS.green} />
-            <Text style={styles.infor}>Email: baga@gmail.com</Text>
+            <Text style={styles.infor}>Email: {user.email}</Text>
           </View>
           <View style={{ ...styles.infoItem, borderTopWidth: 0 }}>
             <Icon name="call" size={28} color={COLORS.green} />
-            <Text style={styles.infor}>Hot-line: 017501750175</Text>
+            <Text style={styles.infor}>Hot-line: {user.phone}</Text>
           </View>
           <View style={{ ...styles.infoItem, borderTopWidth: 0 }}>
             <Icon name="call" size={28} color={COLORS.green} />
-            <Text style={styles.infor}>
-              Địa chỉ: Khu 3, xã Hoàng Cương, Huyện Thanh Ba, Phú Thọ, Việt Nam
-            </Text>
+            <Text style={styles.infor}>{user.address}</Text>
           </View>
-          <View style={{alignItems: "center"}}>
+          <View style={{ alignItems: "center" }}>
             <Pressable style={styles.changePassBtn}>
-              <Text style={{fontSize: 16}}>Đổi mật khẩu</Text>
+              <Text style={{ fontSize: 16 }}>Đổi mật khẩu</Text>
             </Pressable>
           </View>
         </View>
       </View>
 
       <View style={styles.btnWrapper}>
-        <PrimaryButton title="Đăng xuất" noOpacity />
+        <PrimaryButton title="Đăng xuất" noOpacity onPress={handleLogout} />
       </View>
     </SafeAreaView>
   );
@@ -123,7 +157,7 @@ const styles = StyleSheet.create({
   },
   infor: {
     fontSize: 16,
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   changePassBtn: {
     marginHorizontal: 20,
@@ -135,8 +169,8 @@ const styles = StyleSheet.create({
     width: 120,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 20
-  }
+    marginTop: 20,
+  },
 });
 
 export default AccountScreen;

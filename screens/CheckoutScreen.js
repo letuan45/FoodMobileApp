@@ -1,93 +1,23 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   SafeAreaView,
   View,
   StyleSheet,
   Text,
   FlatList,
-  ScrollView,
   TextInput,
 } from "react-native";
-import BackButton from "../components/UI/BackButton";
+import BackButton from "../components/UI/Buttons/BackButton";
 import COLORS from "../consts/colors";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import PaymentList from "../components/Payment/PaymentList";
-import PrimaryButton from "../components/UI/PrimaryButton";
-
-const DUMMY_CART = [
-  {
-    id_item: 1,
-    name: "Burger Size L Burger Size L Burger Size L",
-    price: 100000,
-    amount: 1,
-    quantity: 12,
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-  },
-  {
-    id_item: 2,
-    name: "Burger Size L",
-    price: 100000,
-    amount: 1,
-    quantity: 12,
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-  },
-  {
-    id_item: 3,
-    name: "Burger Size L Burger Size L Burger Size L",
-    price: 100000,
-    amount: 1,
-    quantity: 12,
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-  },
-  {
-    id_item: 4,
-    name: "Burger Size L",
-    price: 100000,
-    amount: 1,
-    quantity: 12,
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-  },
-  {
-    id_item: 5,
-    name: "Burger Size L Burger Size L Burger Size L",
-    price: 100000,
-    amount: 1,
-    quantity: 12,
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-  },
-  {
-    id_item: 6,
-    name: "Burger Size L",
-    price: 100000,
-    amount: 1,
-    quantity: 12,
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-  },
-  {
-    id_item: 7,
-    name: "Burger Size L Burger Size L Burger Size L",
-    price: 100000,
-    amount: 1,
-    quantity: 12,
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-  },
-  {
-    id_item: 8,
-    name: "Burger Size L",
-    price: 100000,
-    amount: 1,
-    quantity: 12,
-    image:
-      "https://demo2.pavothemes.com/poco/wp-content/uploads/2020/08/2-1-600x600.png",
-  },
-];
+import PrimaryButton from "../components/UI/Buttons/PrimaryButton";
+import { useSelector, useDispatch } from "react-redux";
+import { getCheckoutMethods } from "../services/CheckoutService";
+import LoadingSpinner from "../components/UI/Interactors/LoadingSpinner";
+import { checkout } from "../services/CheckoutService";
+import ShowToast from "../utils/ShowToast";
+import { cartActions } from "../store";
 
 const CartItem = ({ item }) => {
   const price = Number(item.price).toLocaleString("en");
@@ -99,7 +29,7 @@ const CartItem = ({ item }) => {
       </Text>
       <View style={styles.cartItemInfo}>
         <Text style={{ fontSize: 15, color: COLORS.green, fontWeight: "bold" }}>
-          Đơn giá: {price}VND
+          Đơn giá: {price} VND
         </Text>
         <Text style={{ fontSize: 15, color: COLORS.red, fontWeight: "bold" }}>
           X {item.amount}
@@ -110,15 +40,106 @@ const CartItem = ({ item }) => {
 };
 
 const CheckoutScreen = ({ navigation }) => {
-  const cartItems = DUMMY_CART;
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+  const cartItems = useSelector((state) => state.cart.items);
+  const [paymentMethods, setPaymentMethods] = useState([]);
+  const [currentPayment, setCurrentPayment] = useState();
+  const [description, setDescription] = useState("");
+  const { getMethodsRes, getMethodsIsLoading, getMethodsError } =
+    getCheckoutMethods();
+  const { checkoutRes, checkoutError, checkoutIsLoading, callCheckout } =
+    checkout();
 
-  const handleCheckout = () => {}
+  useEffect(() => {
+    if (checkoutRes) {
+      ShowToast(checkoutRes.message);
+      dispatch(cartActions.clearCart());
+      navigation.navigate("CheckoutSuccessScreen");
+    } else if (checkoutError) {
+      ShowToast(checkoutError.data.message);
+    }
+  }, [checkoutRes, checkoutError]);
+
+  useEffect(() => {
+    if (getMethodsRes) {
+      setPaymentMethods(getMethodsRes);
+      setCurrentPayment(getMethodsRes[0].id_payment);
+    }
+  }, [getMethodsRes]);
+
+  const totalPrice =
+    cartItems.length > 0
+      ? cartItems.reduce((acc, item) => acc + item.price * item.amount, 0)
+      : 0;
+  const renderTotalPrice = Number(totalPrice).toLocaleString("en");
+
+  if (!user) {
+    navigation.navigate("Home");
+    return;
+  }
+
+  const onChangeDescription = (value) => {
+    setDescription(value);
+  };
+
+  const changePaymentHandler = (idPayment) => {
+    setCurrentPayment(idPayment);
+  };
+
+  const handleCheckout = () => {
+    const values = {
+      paymentMethod: currentPayment,
+      description: description.trim(),
+    };
+    callCheckout(values);
+  };
+
+  let paymentContent;
+  if (getMethodsIsLoading) {
+    paymentContent = (
+      <View style={{ marginVertical: 30 }}>
+        <LoadingSpinner />
+      </View>
+    );
+  } else if (getMethodsError) {
+    paymentContent = <Text>Lỗi khi lấy danh sách phương thức thanh toán</Text>;
+  } else {
+    paymentContent = (
+      <PaymentList
+        items={paymentMethods}
+        activePayment={currentPayment}
+        onChangePayment={changePaymentHandler}
+      />
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <BackButton navigation={navigation} />
         <Text style={styles.headerText}>Thanh toán</Text>
+      </View>
+      <View style={styles.card}>
+        <View style={{ paddingHorizontal: 10 }}>
+          <View style={styles.cardHeader}>
+            <Icon name="monetization-on" size={28} color={COLORS.black} />
+            <Text style={styles.cardHeaderText}>
+              Chọn phương thức thanh toán
+            </Text>
+          </View>
+          {/* <PaymentList items={paymentMethods} /> */}
+          {paymentContent}
+          <View style={styles.cardHeader}>
+            <Icon name="sms" size={28} color={COLORS.black} />
+            <Text style={styles.cardHeaderText}>Ghi chú cho chúng tôi</Text>
+          </View>
+          <TextInput
+            placeholder="Ghi chú của bạn"
+            style={styles.description}
+            onChangeText={onChangeDescription}
+          />
+        </View>
       </View>
       <View style={styles.card}>
         <View style={styles.cardContentWraper}>
@@ -136,27 +157,16 @@ const CheckoutScreen = ({ navigation }) => {
         </View>
         <View style={styles.summaryWrapper}>
           <Text style={styles.summaryText}>Tổng tiền: </Text>
-          <Text style={styles.summaryText}>500,000 VND</Text>
+          <Text style={styles.summaryText}>{renderTotalPrice} VND</Text>
         </View>
       </View>
-      <View style={styles.card}>
-        <View style={{ paddingHorizontal: 10 }}>
-          <View style={styles.cardHeader}>
-            <Icon name="monetization-on" size={28} color={COLORS.black} />
-            <Text style={styles.cardHeaderText}>
-              Chọn phương thức thanh toán
-            </Text>
-          </View>
-          <PaymentList />
-          <View style={styles.cardHeader}>
-            <Icon name="sms" size={28} color={COLORS.black} />
-            <Text style={styles.cardHeaderText}>Ghi chú cho chúng tôi</Text>
-          </View>
-          <TextInput placeholder="Ghi chú của bạn" style={styles.description} />
-        </View>
-      </View>
+
       <View style={styles.btnWrapper}>
-        <PrimaryButton title="Xác nhận thanh toán" onPress={handleCheckout}/>
+        <PrimaryButton
+          title="Xác nhận thanh toán"
+          isLoading={checkoutIsLoading}
+          onPress={handleCheckout}
+        />
       </View>
     </SafeAreaView>
   );
@@ -249,8 +259,8 @@ const styles = StyleSheet.create({
     height: 54,
   },
   btnWrapper: {
-    paddingHorizontal: 20
-  }
+    paddingHorizontal: 20,
+  },
 });
 
 export default CheckoutScreen;

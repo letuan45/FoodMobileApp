@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { TextInput, HelperText } from "react-native-paper";
-import COLORS from "../../consts/colors";
+import COLORS from "../../../consts/colors";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 const CustomLongInput = (props) => {

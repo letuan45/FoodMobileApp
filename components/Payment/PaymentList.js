@@ -1,22 +1,6 @@
 import { View, StyleSheet, Text, Pressable } from "react-native";
 import COLORS from "../../consts/colors";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { useState } from "react";
-
-const DUMMY_PAYMENTS = [
-  {
-    id_payment: 1,
-    name: "Thanh toán khi nhận hàng",
-  },
-  {
-    id_payment: 2,
-    name: "Thanh toán thẻ ngân hàng",
-  },
-  {
-    id_payment: 3,
-    name: "Thanh toán thẻ ghi nợ",
-  },
-];
 
 const paymentIcons = [
   <Icon name="payments" size={22} color={COLORS.primary} />,
@@ -24,15 +8,14 @@ const paymentIcons = [
   <Icon name="credit-card" size={22} color={COLORS.primary} />,
 ];
 
-const PaymentList = () => {
-  let payments = DUMMY_PAYMENTS;
+const PaymentList = ({ items, onChangePayment, activePayment }) => {
+  let payments = items;
   payments = payments.map((item, index) => {
     return { icon: paymentIcons[index], ...item };
   });
-  const [currentPayment, setCurrentPayment] = useState(payments[0].id_payment);
 
   const handleChangePayment = (idPayment) => {
-    setCurrentPayment(idPayment);
+    onChangePayment(idPayment);
   };
 
   return (
@@ -45,7 +28,7 @@ const PaymentList = () => {
           <View
             style={{
               borderColor:
-                currentPayment === item.id_payment
+                activePayment === item.id_payment
                   ? COLORS.green
                   : "transparent",
               ...styles.paymentItem,
@@ -71,7 +54,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.fadeYellow,
     marginBottom: 10,
     borderRadius: 10,
-    elevation: 2,
+    elevation: 4,
     borderWidth: 2,
   },
   paymentName: {

@@ -1,7 +1,7 @@
 import { Text, TouchableOpacity, View } from "react-native";
 import { StyleSheet } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
-import COLORS from "../../consts/colors";
+import COLORS from "../../../consts/colors";
 
 const PrimaryButton = ({ title, noOpacity, isLoading, onPress = () => {} }) => {
   return (

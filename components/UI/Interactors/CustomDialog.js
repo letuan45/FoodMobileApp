@@ -5,8 +5,8 @@ import {
   Dimensions,
   Text,
 } from "react-native";
-import COLORS from "../../consts/colors";
-import Z_INDEXES from "../../consts/zIndexes";
+import COLORS from "../../../consts/colors";
+import Z_INDEXES from "../../../consts/zIndexes";
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;

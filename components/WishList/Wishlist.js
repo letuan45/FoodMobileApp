@@ -1,12 +1,38 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FlatList, View, StyleSheet, Image, Text } from "react-native";
 import COLORS from "../../consts/colors";
-import ToWishListButton from "../UI/ToWishListButton";
+import ToWishListButton from "../UI/Buttons/ToWishListButton";
+import { useDispatch } from "react-redux";
+import { wishListActions } from "../../store";
+import { toggleWishlistItem } from "../../services/WishlistService";
+import ShowToast from "../../utils/ShowToast";
 
 const WishlistItem = ({ item }) => {
+  const dispatch = useDispatch();
   const price = Number(item.price).toLocaleString("en");
+  const {
+    toggleWLItemRes,
+    toggleWLItemError,
+    toggleWLItemIsLoading,
+    callToggleWishlistItem,
+  } = toggleWishlistItem();
 
-  const handleToWishList = () => {};
+  useEffect(() => {
+    if(toggleWLItemRes) {
+      ShowToast(toggleWLItemRes.message);
+      console.log(item);
+      dispatch(wishListActions.toggleWishListItem({item: item}));
+    } else if (toggleWLItemError) {
+      ShowToast(toggleWLItemError.data.message);
+    }
+  }, [toggleWLItemRes, toggleWLItemError]);
+
+  
+
+  const handleToWishList = () => {
+    
+    callToggleWishlistItem(item.id_item);
+  };
 
   return (
     <View style={styles.itemWrapper}>
@@ -18,7 +44,11 @@ const WishlistItem = ({ item }) => {
         <Text style={styles.itemPrice}>{price}VND</Text>
       </View>
       <View style={styles.btnWrapper}>
-        <ToWishListButton onPress={handleToWishList} />
+        <ToWishListButton
+          onPress={handleToWishList}
+          active={true}
+          isLoading={toggleWLItemIsLoading}
+        />
       </View>
     </View>
   );

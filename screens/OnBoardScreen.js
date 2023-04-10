@@ -1,7 +1,7 @@
 import { StyleSheet, Image, View, Text, SafeAreaView } from "react-native";
 import COLORS from "../consts/colors";
-import PrimaryButton from "../components/UI/PrimaryButton";
-import Logo from "../components/UI/Logo";
+import PrimaryButton from "../components/UI/Buttons/PrimaryButton";
+import Logo from "../components/UI/Decorations/Logo";
 
 const OnBoardScreen = ({ navigation }) => {
   return (
@@ -23,7 +23,7 @@ const OnBoardScreen = ({ navigation }) => {
         </Text>
         <PrimaryButton
           title="Bắt đầu"
-          onPress={() => navigation.navigate("LoginScreen")}
+          onPress={() => navigation.navigate("Home")}
         />
       </View>
     </SafeAreaView>

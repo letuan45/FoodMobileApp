@@ -1,5 +1,6 @@
 //A Cover of followed by youtuber Dave Gray
 import { useState, useEffect, useCallback } from "react";
+import { getStringData } from "../services/useAsyncStorage";
 
 //Hook này dùng cho method Gọi tự động
 const useAxios = (configObj) => {
@@ -16,9 +17,9 @@ const useAxios = (configObj) => {
 
   useEffect(() => {
     const controller = new AbortController(); // Dùng đến khi cần dừng 1 request
-    const token = null; // Chổ này sửa sau    
 
     const fetchData = async () => {
+      const token = await getStringData("token");
       try {
         const res = await axiosInstance({
           method: method.toLowerCase(),

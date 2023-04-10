@@ -9,6 +9,7 @@ const COLORS = {
   greyDark: "#808080",
   red: "#e63946",
   green: "#00a149",
+  greenDark: "#007200",
   milkBackground: "#f7f4ef",
   fadeYellow: "#fbf7e8",
 };

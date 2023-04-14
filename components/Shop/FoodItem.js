@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Text,
   View,
-  ToastAndroid,
 } from "react-native";
 import COLORS from "../../consts/colors";
 import AddToCartButton from "../UI/Buttons/AddToCartButton";
@@ -14,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { cartActions } from "../../store";
 import { addToCart } from "../../services/CartService";
 import ShowToast from "../../utils/ShowToast";
+import { Rating } from "react-native-ratings";
 
 const { width } = Dimensions.get("screen");
 const itemWidth = width / 2 - 20;
@@ -61,6 +61,19 @@ const FoodItem = ({ item, navigation }) => {
           >
             {item.name}
           </Text>
+          <View style={styles.ratingWrapper}>
+            <Rating
+              type="custom"
+              ratingCount={5}
+              imageSize={24}
+              startingValue={item.rating ? item.rating : 0}
+              ratingColor={COLORS.red}
+              ratingBackgroundColor={COLORS.grey}
+              tintColor={COLORS.fadeYellow}
+              readonly
+            />
+          </View>
+
           <Text
             style={{
               fontSize: 14,
@@ -94,10 +107,10 @@ const FoodItem = ({ item, navigation }) => {
 const styles = StyleSheet.create({
   item: {
     flexDirection: "column",
-    height: 170,
+    height: 208,
     width: itemWidth,
     marginHorizontal: 10,
-    marginBottom: 50,
+    marginBottom: 40,
     borderRadius: 15,
     marginTop: 55,
     elevation: 8,
@@ -121,6 +134,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 0,
   },
+  ratingWrapper: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    marginVertical: 4
+  }
 });
 
 export default React.memo(FoodItem);

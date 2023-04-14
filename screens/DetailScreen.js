@@ -8,6 +8,7 @@ import {
   Image,
   Pressable,
   TextInput,
+  TouchableOpacity,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import BackButton from "../components/UI/Buttons/BackButton";
@@ -23,6 +24,7 @@ import { cartActions, wishListActions } from "../store";
 import useCheckInWishlist from "../hooks/useCheckInWishlist";
 import { toggleWishlistItem } from "../services/WishlistService";
 import ShowToast from "../utils/ShowToast";
+import { Rating } from "react-native-ratings";
 
 const QuantityControl = ({ icon, onPress = () => {} }) => {
   return (
@@ -99,7 +101,7 @@ const DetailScreen = ({ navigation, route }) => {
 
   //Toggle wishlist
   const toggleToWishListHandler = () => {
-    if(!user) {
+    if (!user) {
       ShowToast("Bạn phải đăng nhập để tương tác!");
       return;
     }
@@ -134,6 +136,8 @@ const DetailScreen = ({ navigation, route }) => {
     callAddToCart(amount);
   };
 
+  console.log(product);
+
   //Render vars
   const quantity = product.quantity;
   const price = Number(product.price).toLocaleString("en");
@@ -161,16 +165,48 @@ const DetailScreen = ({ navigation, route }) => {
       <View style={styles.detailContainer}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.functionWrapper}>
-            <ToWishListButtom
-              onPress={toggleToWishListHandler}
-              active={isInWishlist}
-              isLoading={toggleWLItemIsLoading}
-            />
-            <Pressable>
-              <View style={styles.seeComment}>
-                <Icon name="comment" size={28} color={COLORS.white} />
-              </View>
-            </Pressable>
+            <View style={styles.functionItemWrapper}>
+              <ToWishListButtom
+                onPress={toggleToWishListHandler}
+                active={isInWishlist}
+                isLoading={toggleWLItemIsLoading}
+              />
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => {
+                  const itemId = product["id_item"];
+                  navigation.navigate("ViewReviewsScreen", itemId);
+                }}
+              >
+                <View style={styles.seeComment}>
+                  <Icon name="comment" size={28} color={COLORS.white} />
+                </View>
+                <View style={styles.reviewQuantity}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: COLORS.white,
+                      fontWeight: 500,
+                      textAlign: "center",
+                    }}
+                  >
+                    {product.countComment}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            <View>
+              <Rating
+                type="custom"
+                ratingCount={5}
+                imageSize={40}
+                startingValue={product.rating ? product.rating : 0}
+                ratingColor={COLORS.red}
+                ratingBackgroundColor={COLORS.grey}
+                tintColor={COLORS.white}
+                readonly
+              />
+            </View>
           </View>
 
           <Text
@@ -354,6 +390,8 @@ const styles = StyleSheet.create({
   },
   functionWrapper: {
     flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   seeComment: {
     height: 50,
@@ -363,7 +401,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: COLORS.green,
     elevation: 8,
-    marginLeft: 10
+    marginLeft: 10,
+  },
+  functionItemWrapper: {
+    flexDirection: "row",
+  },
+  reviewQuantity: {
+    height: 22,
+    width: 22,
+    backgroundColor: COLORS.primary,
+    borderRadius: 11,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    right: -5,
   },
 });
 

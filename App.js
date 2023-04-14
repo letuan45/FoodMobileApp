@@ -14,6 +14,7 @@ import AccountScreen from "./screens/AccountScreen";
 import { Provider } from "react-redux";
 import store from "./store";
 import CheckoutSuccessScreen from "./screens/CheckoutSuccessScreen";
+import ViewReviewsScreen from "./screens/ViewReviewsScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -43,6 +44,10 @@ export default function App() {
           <Stack.Screen
             name="CheckoutSuccessScreen"
             component={CheckoutSuccessScreen}
+          />
+          <Stack.Screen
+            name="ViewReviewsScreen"
+            component={ViewReviewsScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>

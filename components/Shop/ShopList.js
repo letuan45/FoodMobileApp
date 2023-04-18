@@ -15,12 +15,11 @@ import ShopHeader from "./ShopHeader";
 import variables from "../../consts/variables";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useRef } from "react";
-import LoadingSpinner from "../UI/Interactors/LoadingSpinner";
 
 const deviceHeight = Dimensions.get("window").height;
 
 const BottomIndicator = ({ atTheEndList }) => {
-  if(atTheEndList) return;
+  if (atTheEndList) return;
   return (
     <View style={styles.loadingIndiWrapper}>
       <ActivityIndicator size={45} color={COLORS.primaryDark} />
@@ -34,7 +33,7 @@ const ShopList = ({
   isLoading,
   onLoadMore,
   atTheEndList,
-  onChangeCate
+  onChangeCate,
 }) => {
   //Call api
   const products = items;
@@ -43,15 +42,10 @@ const ShopList = ({
   const toTop = () => {
     listRef.current.scrollToOffset({ animated: true, offset: 0 });
   };
+  let content = null;
 
-  if (isLoading) {
-    return (
-      <LoadingSpinner/>
-    );
-  }
-
-  if (!products || products.length === 0) {
-    return (
+  if (!isLoading && (!products || products.length === 0)) {
+    content = (
       <View style={{ alignItems: "center", justifyContent: "center" }}>
         <Image
           source={require("../../assets/images/no-results.png")}
@@ -62,10 +56,8 @@ const ShopList = ({
         </Text>
       </View>
     );
-  }
-
-  return (
-    <Fragment>
+  } else {
+    content = (
       <View style={styles.itemsContainer}>
         <FlatList
           ref={listRef}
@@ -92,8 +84,10 @@ const ShopList = ({
           </View>
         </TouchableOpacity>
       </View>
-    </Fragment>
-  );
+    );
+  }
+
+  return <Fragment>{content}</Fragment>;
 };
 
 const styles = StyleSheet.create({
@@ -104,7 +98,8 @@ const styles = StyleSheet.create({
   },
   itemsContainer: {
     flexWrap: "wrap",
-    height: deviceHeight - variables.bottomNavigateHeight,
+    height: deviceHeight,
+    // height: deviceHeight - variables.bottomNavigateHeight,
   },
   loadingIndiWrapper: {
     marginBottom: 50,

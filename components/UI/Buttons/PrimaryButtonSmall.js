@@ -1,12 +1,19 @@
 import { Text, TouchableOpacity, View } from "react-native";
 import { StyleSheet } from "react-native";
 import COLORS from "../../../consts/colors";
+import { ActivityIndicator } from "react-native-paper";
 
-const PrimaryButtonSmall = ({ title, onPress = () => {} }) => {
+const PrimaryButtonSmall = ({ title, isLoading, onPress = () => {} }) => {
   return (
     <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
       <View style={styles.btnContainer}>
-        <Text style={styles.btnContent}>{title}</Text>
+        <Text style={styles.btnContent}>
+          {isLoading ? (
+            <ActivityIndicator animating={true} color={COLORS.white} />
+          ) : (
+            title
+          )}
+        </Text>
       </View>
     </TouchableOpacity>
   );

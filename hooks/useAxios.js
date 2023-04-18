@@ -13,6 +13,7 @@ const useAxios = (configObj) => {
   // Để chạy lại useEffect bên dưới
   const refetch = useCallback(() => {
     setReload((prev) => prev + 1);
+    setIsLoading(true);
   }, []);
 
   useEffect(() => {
@@ -20,6 +21,7 @@ const useAxios = (configObj) => {
 
     const fetchData = async () => {
       const token = await getStringData("token");
+      //setIsLoading(true);
       try {
         const res = await axiosInstance({
           method: method.toLowerCase(),
@@ -35,7 +37,6 @@ const useAxios = (configObj) => {
         setResponse(res.data);
         setError(null);
       } catch (err) {
-        
         setError(err.response);
       } finally {
         setIsLoading(false);

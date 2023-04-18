@@ -46,7 +46,12 @@ const OrderItem = ({ item, navigation }) => {
 const OrdersScreen = ({ navigation }) => {
   const [orders, setOrders] = useState([]);
   const user = useSelector((state) => state.auth.user);
-  const { getOrdersResponse, getOrdersError, getOrdersIsLoading } = getOrders();
+  const {
+    getOrdersResponse,
+    getOrdersError,
+    getOrdersIsLoading,
+    refetchOrders,
+  } = getOrders();
 
   useEffect(() => {
     if (getOrdersResponse) {
@@ -59,18 +64,19 @@ const OrdersScreen = ({ navigation }) => {
   }
 
   let content;
-  if(getOrdersIsLoading) {
-    content = <LoadingSpinner/>
-  }
-  else if (getOrdersError) {
-    console.log(getOrdersError)
+  if (getOrdersIsLoading) {
+    content = (
+      <View style={{ top: "35%" }}>
+        <LoadingSpinner />
+      </View>
+    );
+  } else if (getOrdersError) {
     content = (
       <Text style={{ marginVertical: 40, fontSize: 20, textAlign: "center" }}>
-        Lỗi khi tải danh sách đơn hàng
+        {getOrdersError.data.message}
       </Text>
     );
-  }
-  else if (!orders || orders.length === 0) {
+  } else if (!orders || orders.length === 0) {
     content = (
       <View style={{ alignItems: "center", justifyContent: "center" }}>
         <Image
@@ -84,10 +90,13 @@ const OrdersScreen = ({ navigation }) => {
     );
   } else {
     const ordersCount = orders.length;
-    const totalPrice = orders.reduce(
-      (totalPrice, order) => totalPrice + order.total,
-      0
-    );
+    console.log("reload", orders)
+    const totalPrice = orders.reduce((totalPrice, order) => {
+      if (order.status === 1) {
+        return totalPrice + order.total;
+      }
+      return totalPrice + 0;
+    }, 0);
     const totalDisplayPrice = Number(totalPrice).toLocaleString("en");
     content = (
       <Fragment>
@@ -107,7 +116,7 @@ const OrdersScreen = ({ navigation }) => {
             <Text style={styles.summaryValue}>{totalDisplayPrice} VND</Text>
           </View>
         </View>
-        <View style={{ height: 580 }}>
+        <View style={{ height: 580}}>
           <FlatList
             showsVerticalScrollIndicator={false}
             data={orders}
@@ -115,6 +124,7 @@ const OrdersScreen = ({ navigation }) => {
               <OrderItem item={item} navigation={navigation} />
             )}
           />
+          <View style={{ height: 48}}/>
         </View>
       </Fragment>
     );
@@ -123,6 +133,16 @@ const OrdersScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.header}>Lịch sử đơn hàng</Text>
+      <TouchableOpacity
+        style={{ alignItems: "center", marginTop: 10 }}
+        onPress={() => {
+          refetchOrders();
+        }}
+      >
+        <View style={styles.reloadButton}>
+          <Icon name="refresh" size={30} color={COLORS.white} />
+        </View>
+      </TouchableOpacity>
       <View style={styles.innerContainer}>{content}</View>
     </SafeAreaView>
   );
@@ -141,7 +161,7 @@ const styles = StyleSheet.create({
     color: COLORS.white,
   },
   innerContainer: {
-    top: "10%",
+    top: "8%",
     height: "90%",
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
@@ -189,7 +209,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontWeight: "bold",
     color: COLORS.primary,
-    textAlign: "center"
+    textAlign: "center",
   },
   orderItem: {
     borderRadius: 12,
@@ -214,6 +234,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 600,
     fontStyle: "italic",
+  },
+  reloadButton: {
+    backgroundColor: COLORS.green,
+    width: 60,
+    height: 40,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

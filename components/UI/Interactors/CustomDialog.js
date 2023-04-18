@@ -10,30 +10,45 @@ import Z_INDEXES from "../../../consts/zIndexes";
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
-const MODAL_HEIGHT = 150;
 
 const CustomDialog = (props) => {
   const handleAgreement = () => {
     props.onAgree(props.itemId);
-  }
+  };
+
+  const isBigModal = props.bigModal;
 
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.backDrop} onPress={props.onClose} />
-      <View style={styles.modal}>
+      <View
+        style={{
+          height: isBigModal ? 350 : 150,
+          width: isBigModal ? WIDTH - 40 : WIDTH - 80,
+          ...styles.modal,
+        }}
+      >
         <Text style={styles.header}>{props.title}</Text>
-        <Text style={styles.dialogContent}>{props.content}</Text>
-        <View style={styles.dialogControls}>
-          <TouchableOpacity style={styles.dialogButton} onPress={props.onClose}>
-            <Text style={styles.dialogBtnContent}>Hủy</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.dialogButton}
-            onPress={handleAgreement}
-          >
-            <Text style={styles.dialogBtnContent}>Xác nhận</Text>
-          </TouchableOpacity>
-        </View>
+        {!props.elementContent && (
+          <Text style={styles.dialogContent}>{props.content}</Text>
+        )}
+        {props.elementContent && <View>{props.elementContent}</View>}
+        {!isBigModal && (
+          <View style={styles.dialogControls}>
+            <TouchableOpacity
+              style={styles.dialogButton}
+              onPress={props.onClose}
+            >
+              <Text style={styles.dialogBtnContent}>Hủy</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.dialogButton}
+              onPress={handleAgreement}
+            >
+              <Text style={styles.dialogBtnContent}>Xác nhận</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -60,12 +75,10 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   modal: {
-    height: MODAL_HEIGHT,
     backgroundColor: COLORS.white,
     zIndex: Z_INDEXES.biggest,
     borderRadius: 10,
     opacity: 1,
-    width: WIDTH - 80,
     paddingHorizontal: 20,
     paddingVertical: 14,
   },
@@ -80,9 +93,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   dialogControls: {
-    flex: 1,
+    paddingVertical: 10,
     flexDirection: "row",
     justifyContent: "center",
+    alignItems: "center",
   },
   dialogButton: {
     flex: 1,

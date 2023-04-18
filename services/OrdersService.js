@@ -9,13 +9,19 @@ export const getOrders = () => {
     response: getOrdersResponse,
     isLoading: getOrdersIsLoading,
     error: getOrdersError,
+    refetch: refetchOrders
   } = useAxios({
     axiosInstance: httpClient,
     method: "GET",
     url: getOrdersURL,
   });
 
-  return { getOrdersResponse, getOrdersError, getOrdersIsLoading };
+  return {
+    getOrdersResponse,
+    getOrdersError,
+    getOrdersIsLoading,
+    refetchOrders,
+  };
 };
 
 export const getOrderDetail = (idOrder) => {

@@ -136,7 +136,6 @@ const DetailScreen = ({ navigation, route }) => {
     callAddToCart(amount);
   };
 
-  console.log(product);
 
   //Render vars
   const quantity = product.quantity;

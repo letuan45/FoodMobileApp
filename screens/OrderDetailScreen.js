@@ -7,6 +7,7 @@ import {
   Image,
   FlatList,
   Pressable,
+  TouchableOpacity,
 } from "react-native";
 import BackButton from "../components/UI/Buttons/BackButton";
 import COLORS from "../consts/colors";
@@ -16,13 +17,27 @@ import { useSelector } from "react-redux";
 import { getOrderDetail, cancelOrder } from "../services/OrdersService";
 import LoadingSpinner from "../components/UI/Interactors/LoadingSpinner";
 import ShowToast from "../utils/ShowToast";
+import ReviewForm from "../components/Review/ReviewForm";
 
-const DetailItem = ({ item }) => {
+const DetailItem = ({ item, openReview, hideReview }) => {
   const price = Number(item.price).toLocaleString("en");
   const subtotal = Number(item.price * item.quantity).toLocaleString("en");
 
+  const openReviewForm = () => {
+    openReview(item);
+  };
+
+  const displayReviewBtn = item.isReviewed === 0 && !hideReview;
+
   return (
     <View style={styles.detailItem}>
+      {displayReviewBtn && (
+        <TouchableOpacity onPress={openReviewForm}>
+          <View style={styles.reviewBtn}>
+            <Icon name="comment" size={18} color={COLORS.white} />
+          </View>
+        </TouchableOpacity>
+      )}
       <Image style={styles.itemImage} source={{ uri: item.image }} />
       <View style={styles.itemContentContainer}>
         <View
@@ -70,9 +85,12 @@ const DetailItem = ({ item }) => {
 
 const OrderDetailScreen = ({ navigation, route }) => {
   const itemId = route.params;
-  const [dialogIsShown, setDialogIsShown] = useState(false);
+  const [dialogIsShown, setDialogIsShown] = useState(false); //Cancel Dialog
+  const [reviewFormIsShown, setReviewFormIsShown] = useState(false); //Cancel Dialog
   const [orderDetail, setOrderDetail] = useState(null);
   const user = useSelector((state) => state.auth.user);
+  const [reviewProduct, setReviewProduct] = useState(null);
+
   const {
     getOrdersDetailResponse,
     getOrdersDetailIsLoading,
@@ -106,26 +124,34 @@ const OrderDetailScreen = ({ navigation, route }) => {
   }
 
   const detailItems = orderDetail.itemList;
-  console.log(orderDetail);
 
   const totalPrice = Number(orderDetail.total).toLocaleString("en");
 
   const handleCancelOrder = () => {
     // Xử lý logic
-    console.log(itemId);
     callCancelOrder(itemId);
 
     //Đóng Dialog
     setDialogIsShown(false);
   };
 
-  //Show Dialog
+  //Show Dialog cancel
   const openDialogHandler = () => {
     setDialogIsShown(true);
   };
 
   const closeDialogHandler = () => {
     setDialogIsShown(false);
+  };
+
+  //Show Dialog Review
+  const openReviewHandler = (item) => {
+    setReviewProduct(item);
+    setReviewFormIsShown(true);
+  };
+
+  const closeReviewHandler = () => {
+    setReviewFormIsShown(false);
   };
 
   if (!user) {
@@ -151,6 +177,21 @@ const OrderDetailScreen = ({ navigation, route }) => {
           content="Bạn có chắc chắn muốn hủy hóa đơn/đơn hàng này?"
           onClose={closeDialogHandler}
           onAgree={handleCancelOrder}
+        />
+      )}
+      {reviewFormIsShown && (
+        <CustomDialog
+          title={`Đánh giá ${reviewProduct.name}`}
+          elementContent={
+            <ReviewForm
+              onClose={closeReviewHandler}
+              onReload={refetchOrder}
+              productId={reviewProduct["id_item"]}
+              orderId={itemId}
+            />
+          }
+          onClose={closeReviewHandler}
+          bigModal
         />
       )}
       {getOrdersDetailIsLoading ? (
@@ -185,7 +226,6 @@ const OrderDetailScreen = ({ navigation, route }) => {
                     {status}
                   </Text>
                 </View>
-
                 <Text style={styles.headerDetailContent}>
                   Đặt lúc: {orderDetail.datetime}
                 </Text>
@@ -196,13 +236,19 @@ const OrderDetailScreen = ({ navigation, route }) => {
               <View style={styles.itemsWrapper}>
                 <FlatList
                   data={detailItems}
-                  renderItem={({ item }) => <DetailItem item={item} />}
+                  renderItem={({ item }) => (
+                    <DetailItem
+                      item={item}
+                      openReview={openReviewHandler}
+                      hideReview={orderDetail.status !== 1}
+                    />
+                  )}
                 />
               </View>
             </View>
           </View>
           <Text style={styles.totalPrice}>Tổng tiền: {totalPrice} VND</Text>
-          {orderDetail.status !== 2 && (
+          {orderDetail.status === 0 && (
             <Pressable style={styles.cancelBtn} onPress={openDialogHandler}>
               {cancelOrderIsLoading && <LoadingSpinner size="small" />}
               {!cancelOrderIsLoading && (
@@ -267,6 +313,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   itemsWrapper: {
+    paddingTop: 12,
     height: 400,
   },
   detailItem: {
@@ -274,8 +321,9 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   itemImage: {
-    width: 100,
-    height: 100,
+    width: 110,
+    height: 110,
+    zIndex: -1,
   },
   itemContentContainer: {
     flex: 1,
@@ -308,6 +356,16 @@ const styles = StyleSheet.create({
   orderError: {
     fontSize: 20,
     textAlign: "center",
+  },
+  reviewBtn: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: COLORS.green,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 10,
+    position: "absolute",
   },
 });
 

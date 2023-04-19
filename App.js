@@ -15,6 +15,8 @@ import { Provider } from "react-redux";
 import store from "./store";
 import CheckoutSuccessScreen from "./screens/CheckoutSuccessScreen";
 import ViewReviewsScreen from "./screens/ViewReviewsScreen";
+import ChangePasswordScreen from "./screens/ChangePasswordScreen";
+import ForgetPasswordScreen from "./screens/ForgetPasswordScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -48,6 +50,14 @@ export default function App() {
           <Stack.Screen
             name="ViewReviewsScreen"
             component={ViewReviewsScreen}
+          />
+          <Stack.Screen
+            name="ChangePasswordScreen"
+            component={ChangePasswordScreen}
+          />
+          <Stack.Screen
+            name="ForgetPasswordScreen"
+            component={ForgetPasswordScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>

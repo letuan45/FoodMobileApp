@@ -12,7 +12,6 @@ import { ActivityIndicator } from "react-native-paper";
 import { Dimensions } from "react-native";
 import { Fragment } from "react";
 import ShopHeader from "./ShopHeader";
-import variables from "../../consts/variables";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useRef } from "react";
 
@@ -34,6 +33,7 @@ const ShopList = ({
   onLoadMore,
   atTheEndList,
   onChangeCate,
+  error
 }) => {
   //Call api
   const products = items;
@@ -44,7 +44,7 @@ const ShopList = ({
   };
   let content = null;
 
-  if (!isLoading && (!products || products.length === 0)) {
+  if (!isLoading && (!products || products.length === 0) && error) {
     content = (
       <View style={{ alignItems: "center", justifyContent: "center" }}>
         <Image

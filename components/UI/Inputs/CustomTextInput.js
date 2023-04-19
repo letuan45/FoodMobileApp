@@ -6,7 +6,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 
 const CustomTextInput = (props) => {
   const [isSecured, setIsSecured] = useState(props.password);
-  const [rightIconOn, setRightIconOn] = useState(false)
+  const [rightIconOn, setRightIconOn] = useState(false);
 
   const handleToggleSecured = () => {
     setIsSecured((oldState) => !oldState);
@@ -30,12 +30,15 @@ const CustomTextInput = (props) => {
         mode={props.mode}
         label={props.label}
         placeholder={props.placeholder}
-        style={styles.input}
+        style={{
+          backgroundColor: props.light ? COLORS.milkBackground : COLORS.black,
+          ...styles.input,
+        }}
         theme={theme}
         outlineColor={COLORS.primary}
         secureTextEntry={isSecured}
         error={!!props.errorMessage}
-        textColor={COLORS.white}
+        textColor={props.light ? COLORS.black : COLORS.white}
         onChangeText={props.onChangeText}
         onBlur={props.onBlur}
         value={props.value}
@@ -70,7 +73,6 @@ const CustomTextInput = (props) => {
 const styles = StyleSheet.create({
   input: {
     fontSize: 20,
-    backgroundColor: COLORS.black,
     marginBottom: 5,
   },
   helper: {
@@ -83,6 +85,7 @@ const theme = {
   colors: {
     primary: COLORS.green,
     background: COLORS.greyLight,
+   
   },
 };
 

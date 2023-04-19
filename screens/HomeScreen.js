@@ -79,6 +79,7 @@ const HomeScreen = ({ navigation }) => {
         isLoading={productsIsLoading}
         atTheEndList={currentPage === numberOfPage}
         onChangeCate={handleCateChange}
+        error={productsError}
       />
     </SafeAreaView>
   );

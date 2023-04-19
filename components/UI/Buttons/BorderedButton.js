@@ -1,14 +1,21 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { StyleSheet } from "react-native";
 import COLORS from "../../../consts/colors";
 
-const BorderedButton = ({ title, onPress = () => {} }) => {
+const BorderedButton = ({ title, onPress = () => {}, dark }) => {
   return (
-    <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
+    <Pressable onPress={onPress}>
       <View style={styles.btnContainer}>
-        <Text style={styles.btnContent}>{title}</Text>
+        <Text
+          style={{
+            color: dark ? COLORS.primary : COLORS.white,
+            ...styles.btnContent,
+          }}
+        >
+          {title}
+        </Text>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
@@ -19,14 +26,13 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderWidth: 2,
     borderColor: COLORS.primary,
-    elevation: 4,
     justifyContent: "center",
     alignContent: "center",
   },
   btnContent: {
     fontSize: 20,
     fontWeight: "bold",
-    color: COLORS.white,
+
     textAlign: "center",
   },
 });

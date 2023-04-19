@@ -87,7 +87,12 @@ const AccountScreen = ({ navigation }) => {
             <Text style={styles.infor}>{user.address}</Text>
           </View>
           <View style={{ alignItems: "center" }}>
-            <Pressable style={styles.changePassBtn}>
+            <Pressable
+              style={styles.changePassBtn}
+              onPress={() => {
+                navigation.navigate("ChangePasswordScreen");
+              }}
+            >
               <Text style={{ fontSize: 16 }}>Đổi mật khẩu</Text>
             </Pressable>
           </View>

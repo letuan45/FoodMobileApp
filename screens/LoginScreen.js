@@ -3,7 +3,6 @@ import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import COLORS from "../consts/colors";
 import { Formik } from "formik";
 import CustomTextInput from "../components/UI/Inputs/CustomTextInput";
-import { Dimensions } from "react-native";
 import PrimaryButton from "../components/UI/Buttons/PrimaryButton";
 import BorderedButton from "../components/UI/Buttons/BorderedButton";
 import { SignupSchema } from "../utils/validation";
@@ -96,7 +95,10 @@ const LoginScreen = ({ navigation }) => {
                     isLoading={loginIsLoading}
                   />
                 </View>
-                <TouchableOpacity style={styles.forgetPassWrapper}>
+                <TouchableOpacity
+                  style={styles.forgetPassWrapper}
+                  onPress={() => navigation.navigate("ForgetPasswordScreen")}
+                >
                   <Text style={styles.forgetPassword}>Quên mật khẩu</Text>
                 </TouchableOpacity>
                 <View style={styles.btnWrapper}>
@@ -114,39 +116,6 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-  },
-  bgContainer: {
-    flex: 1,
-  },
-  image: {
-    flex: 1,
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height + 50,
-  },
-  backDrop: {
-    flex: 1,
-    backgroundColor: COLORS.black,
-    opacity: 0.75,
-  },
-  contentContainer: {
-    zIndex: 1,
-    width: "100%",
-    height: "100%",
-    position: "absolute",
-    paddingHorizontal: 20,
-  },
-  logoWrapper: {
-    marginTop: 50,
-    width: "100%",
-    alignItems: "center",
-  },
-  formHeader: {
-    fontSize: 40,
-    fontWeight: "bold",
-    color: COLORS.primary,
-    textAlign: "center",
-    marginTop: 20,
-    marginBottom: 10,
   },
   btnGroup: {
     marginTop: 30,

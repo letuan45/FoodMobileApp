@@ -31,6 +31,7 @@ const CustomLongInput = (props) => {
         label={props.label}
         placeholder={props.placeholder}
         style={styles.input}
+        textAlignVertical="top"
         theme={theme}
         outlineColor={COLORS.primary}
         secureTextEntry={isSecured}

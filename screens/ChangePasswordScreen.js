@@ -6,21 +6,38 @@ import CustomTextInput from "../components/UI/Inputs/CustomTextInput";
 import PrimaryButton from "../components/UI/Buttons/PrimaryButton";
 import { ChangePasswordSchema } from "../utils/validation";
 import FormContainer from "../components/UI/Interactors/FormContainer";
+import { changePassword } from "../services/ChangePasswordService";
+import ShowToast from "../utils/ShowToast";
 
 const initialLoginValues = {
-  password: "",
-  rePassword: "",
+  oldPassword: "",
   newPassword: "",
+  repeatPassword: "",
 };
 
 const ChangePasswordScreen = ({ navigation }) => {
+  const {
+    changePasswordResponse,
+    changePasswordError,
+    changePasswordIsLoading,
+    callChangePassword,
+  } = changePassword();
+
+  useEffect(() => {
+    if (changePasswordResponse) {
+      ShowToast(changePasswordResponse.message);
+      navigation.goBack();
+    } else if (changePasswordError) {
+      ShowToast(changePasswordError.data.message);
+    }
+  }, [changePasswordResponse, changePasswordError]);
+
+  console.log(changePasswordResponse);
+
   const handleSubmitLogin = (values) => {
     // Xử lý login
-    callLogin(values);
-  };
-
-  const handleToLogin = () => {
-    navigation.navigate("RegisterScreen");
+    callChangePassword(values);
+    console.log(values)
   };
 
   return (
@@ -47,26 +64,12 @@ const ChangePasswordScreen = ({ navigation }) => {
                 leftIconName="lock"
                 rightIconName="visibility"
                 password
-                onChangeText={handleChange("password")}
-                onBlur={handleBlur("password")}
-                value={values.password}
+                onChangeText={handleChange("oldPassword")}
+                onBlur={handleBlur("oldPassword")}
+                value={values.oldPassword}
                 errorMessage={
-                  errors.password && touched.password ? errors.password : null
-                }
-              />
-              <CustomTextInput
-                mode="outlined"
-                label="Mật khẩu cũ - 2"
-                placeholder="Nhập lại mật khẩu cũ"
-                leftIconName="lock"
-                rightIconName="visibility"
-                password
-                onChangeText={handleChange("rePassword")}
-                onBlur={handleBlur("rePassword")}
-                value={values.rePassword}
-                errorMessage={
-                  errors.rePassword && touched.rePassword
-                    ? errors.rePassword
+                  errors.oldPassword && touched.oldPassword
+                    ? errors.oldPassword
                     : null
                 }
               />
@@ -86,9 +89,29 @@ const ChangePasswordScreen = ({ navigation }) => {
                     : null
                 }
               />
+              <CustomTextInput
+                mode="outlined"
+                label="Mật khẩu mới (Nhập lại)"
+                placeholder="Nhập lại mật khẩu mới"
+                leftIconName="lock"
+                rightIconName="visibility"
+                password
+                onChangeText={handleChange("repeatPassword")}
+                onBlur={handleBlur("repeatPassword")}
+                value={values.repeatPassword}
+                errorMessage={
+                  errors.repeatPassword && touched.repeatPassword
+                    ? errors.repeatPassword
+                    : null
+                }
+              />
               <View style={styles.btnGroup}>
                 <View style={styles.btnWrapper}>
-                  <PrimaryButton title="Xác nhận" onPress={handleSubmit} />
+                  <PrimaryButton
+                    isLoading={changePasswordIsLoading}
+                    title="Xác nhận"
+                    onPress={handleSubmit}
+                  />
                 </View>
               </View>
             </Fragment>

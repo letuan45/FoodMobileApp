@@ -6,8 +6,9 @@ import ProvideUsername from "../components/ForgetPassSteps/ProvideUsername";
 import BorderedButton from "../components/UI/Buttons/BorderedButton";
 import ProvideCode from "../components/ForgetPassSteps/ProvideCode";
 import ChangePassword from "../components/ForgetPassSteps/ChangePassword";
+import ForgetSuccess from "../components/ForgetPassSteps/ForgetSuccess";
 
-const ForgetPasswordScreen = () => {
+const ForgetPasswordScreen = ({ navigation }) => {
   const [stepIndex, setStepIndex] = useState(1);
   const [message, setMessage] = useState("");
   const [username, setUsername] = useState("");
@@ -24,9 +25,15 @@ const ForgetPasswordScreen = () => {
   if (stepIndex === 1) {
     stepsContent = <ProvideUsername onToNextStep={nextStepHandler} />;
   } else if (stepIndex === 2) {
-    stepsContent = <ProvideCode onToNextStep={nextStepHandler} />;
+    stepsContent = (
+      <ProvideCode onToNextStep={nextStepHandler} username={username} />
+    );
+  } else if (stepIndex === 3) {
+    stepsContent = (
+      <ChangePassword onToNextStep={nextStepHandler} username={username} />
+    );
   } else {
-    stepsContent = <ChangePassword onToNextStep={nextStepHandler} />;
+    stepsContent = <ForgetSuccess navigation={navigation} />;
   }
 
   return (
@@ -41,7 +48,13 @@ const ForgetPasswordScreen = () => {
       {message.length > 0 && <Text style={styles.message}>{message}</Text>}
       {stepsContent}
       <View style={{ marginTop: 20 }}>
-        <BorderedButton title="Thoát" dark />
+        <BorderedButton
+          title="Thoát"
+          dark
+          onPress={() => {
+            navigation.navigate("HomeScreen");
+          }}
+        />
       </View>
     </SafeAreaView>
   );

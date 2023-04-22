@@ -1,19 +1,47 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import COLORS from "../../consts/colors";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { Formik } from "formik";
 import CustomTextInput from "../UI/Inputs/CustomTextInput";
 import PrimaryButton from "../UI/Buttons/PrimaryButton";
+import * as Yup from "yup";
+import { changePassword } from "../../services/ForgetPassService";
+import ShowToast from "../../utils/ShowToast";
+
+const Schema = Yup.object().shape({
+  password: Yup.string().required("Hãy nhập mật khẩu mới!"),
+  rePassword: Yup.string().required("Hãy nhập lại mật khẩu mới"),
+});
 
 const initialValues = {
   password: "",
   rePassword: "",
 };
 
-const ChangePassword = () => {
+const ChangePassword = ({ onToNextStep, username }) => {
+  const {
+    changePasswordResponse,
+    changePasswordError,
+    changePasswordIsLoading,
+    callChangePassword,
+  } = changePassword();
+
+  useEffect(() => {
+    if (changePasswordResponse) {
+      onToNextStep();
+    } else if(changePasswordError) {
+      ShowToast(changePasswordError.data.message);
+    }
+  }, [changePasswordResponse, changePasswordError]);
+
   const submitHandler = (values) => {
-    onToNextStep(payload);
+    const data = {
+      username: username,
+      password: values.password,
+      repeatPassword: values.rePassword,
+    };
+    callChangePassword(data);
   };
 
   return (
@@ -31,7 +59,7 @@ const ChangePassword = () => {
       </View>
       <Formik
         initialValues={initialValues}
-        //   validationSchema={}
+        validationSchema={Schema}
         onSubmit={submitHandler}
       >
         {({
@@ -46,50 +74,41 @@ const ChangePassword = () => {
             <CustomTextInput
               light
               mode="outlined"
-              label="Mã xác nhận"
-              placeholder="Nhập mã xác nhận"
-              leftIconName="vpn-key"
-              onChangeText={handleChange("verifyCode")}
-              onBlur={handleBlur("verifyCode")}
-              value={values.verifyCode}
+              label="Mật khẩu mới"
+              placeholder="Nhập mật khẩu mới"
+              leftIconName="lock"
+              rightIconName="visibility"
+              onChangeText={handleChange("password")}
+              onBlur={handleBlur("password")}
+              value={values.password}
+              password
               errorMessage={
-                errors.verifyCode && touched.verifyCode
-                  ? errors.verifyCode
-                  : null
+                errors.password && touched.password ? errors.password : null
               }
             />
             <CustomTextInput
               light
               mode="outlined"
-              label="Mã xác nhận"
-              placeholder="Nhập mã xác nhận"
+              label="Mật khẩu mới"
+              placeholder="Nhập lại mật khẩu mới"
               leftIconName="lock"
-              onChangeText={handleChange("verifyCode")}
-              onBlur={handleBlur("verifyCode")}
-              value={values.verifyCode}
+              rightIconName="visibility"
+              onChangeText={handleChange("rePassword")}
+              onBlur={handleBlur("rePassword")}
+              value={values.rePassword}
+              password
               errorMessage={
-                errors.verifyCode && touched.verifyCode
-                  ? errors.verifyCode
-                  : null
-              }
-            />
-            <CustomTextInput
-              light
-              mode="outlined"
-              label="Mã xác nhận"
-              placeholder="Nhập mã xác nhận"
-              leftIconName="lock"
-              onChangeText={handleChange("verifyCode")}
-              onBlur={handleBlur("verifyCode")}
-              value={values.verifyCode}
-              errorMessage={
-                errors.verifyCode && touched.verifyCode
-                  ? errors.verifyCode
+                errors.rePassword && touched.rePassword
+                  ? errors.rePassword
                   : null
               }
             />
             <View style={styles.btnGroup}>
-              <PrimaryButton title="Tiếp theo" onPress={handleSubmit} />
+              <PrimaryButton
+                isLoading={changePasswordIsLoading}
+                title="Tiếp theo"
+                onPress={handleSubmit}
+              />
             </View>
           </Fragment>
         )}
@@ -118,6 +137,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 4,
     borderColor: COLORS.greyLight,
+    marginBottom: 10,
   },
   btnGroup: {
     marginTop: 30,

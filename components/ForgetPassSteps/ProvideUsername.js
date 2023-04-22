@@ -1,22 +1,46 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import COLORS from "../../consts/colors";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { Formik } from "formik";
 import CustomTextInput from "../UI/Inputs/CustomTextInput";
 import PrimaryButton from "../UI/Buttons/PrimaryButton";
+import * as Yup from "yup";
+import { provideUsername } from "../../services/ForgetPassService";
+import ShowToast from "../../utils/ShowToast";
+
+const Schema = Yup.object().shape({
+  username: Yup.string().required("Hãy nhập tên đăng nhập của bạn!"),
+});
 
 const initiaValues = {
   username: "",
 };
 
 const ProvideUsername = ({ onToNextStep }) => {
+  const [username, setUsername] = useState("");
+  const {
+    provideResponse,
+    provideError,
+    provideIsLoading,
+    callProvideUsername,
+  } = provideUsername();
+
+  useEffect(() => {
+    if(provideResponse) {
+      const payload = {
+        message: provideResponse.message,
+        username: username,
+      };
+      onToNextStep(payload.message, username);
+    } else if(provideError) {
+      ShowToast(provideError.data.message);
+    }
+  },[provideResponse, provideError, username])
+
   const submitHandler = (values) => {
-    const payload = {
-      message: "Message con cặc gì đó",
-      username: values.username,
-    };
-    onToNextStep(payload.message, values.username);
+    setUsername(values.username);
+    callProvideUsername(values);
   };
 
   return (
@@ -34,7 +58,7 @@ const ProvideUsername = ({ onToNextStep }) => {
       </View>
       <Formik
         initialValues={initiaValues}
-        //   validationSchema={}
+        validationSchema={Schema}
         onSubmit={submitHandler}
       >
         {({
@@ -60,7 +84,11 @@ const ProvideUsername = ({ onToNextStep }) => {
               }
             />
             <View style={styles.btnGroup}>
-              <PrimaryButton title="Tiếp theo" onPress={handleSubmit} />
+              <PrimaryButton
+                title="Tiếp theo"
+                isLoading={provideIsLoading}
+                onPress={handleSubmit}
+              />
             </View>
           </Fragment>
         )}
@@ -89,6 +117,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 4,
     borderColor: COLORS.greyLight,
+    marginBottom: 10,
   },
   btnGroup: {
     marginTop: 30,

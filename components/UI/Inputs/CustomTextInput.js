@@ -42,6 +42,7 @@ const CustomTextInput = (props) => {
         onChangeText={props.onChangeText}
         onBlur={props.onBlur}
         value={props.value}
+        keyboardType={props.keyboardType ? props.keyboardType : "default"}
         left={
           props.leftIconName ? (
             <TextInput.Icon

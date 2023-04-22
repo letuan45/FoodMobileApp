@@ -42,7 +42,7 @@ const AccountScreen = ({ navigation }) => {
     } else if (logoutError) {
       ShowToast(logoutError.data.message);
     }
-  }, [logoutResponse, logoutError, logoutIsLoading]);
+  }, [logoutResponse, logoutError]);
 
   if (!user) {
     navigation.navigate("Home");
@@ -100,7 +100,12 @@ const AccountScreen = ({ navigation }) => {
       </View>
 
       <View style={styles.btnWrapper}>
-        <PrimaryButton title="Đăng xuất" noOpacity onPress={handleLogout} />
+        <PrimaryButton
+          isLoading={logoutIsLoading}
+          title="Đăng xuất"
+          noOpacity
+          onPress={handleLogout}
+        />
       </View>
     </SafeAreaView>
   );

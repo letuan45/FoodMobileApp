@@ -1,12 +1,11 @@
 import React, { Fragment } from "react";
 import {
-  SafeAreaView,
   Text,
   View,
   StyleSheet,
-  TouchableHighlight,
   Image,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import COLORS from "../../consts/colors";
 import Logo from "../UI/Decorations/Logo";
@@ -68,11 +67,16 @@ const ShopHeader = ({ navigation, onChangeCate }) => {
           </TouchableOpacity>
         )}
       </View>
-      <TouchableHighlight style={styles.searchContainer}>
+      <Pressable
+        style={styles.searchContainer}
+        onPress={() => {
+          navigation.navigate("SearchScreen");
+        }}
+      >
         <View>
           <Icon name="search" size={28} />
         </View>
-      </TouchableHighlight>
+      </Pressable>
       <Categories onChangeCate={onChangeCate} />
       <View style={styles.banner}>
         <Image

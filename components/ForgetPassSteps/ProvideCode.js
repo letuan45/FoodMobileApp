@@ -1,18 +1,41 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import COLORS from "../../consts/colors";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { Formik } from "formik";
 import CustomTextInput from "../UI/Inputs/CustomTextInput";
 import PrimaryButton from "../UI/Buttons/PrimaryButton";
+import * as Yup from "yup";
+import { provideVerifyCode } from "../../services/ForgetPassService";
+import ShowToast from "../../utils/ShowToast";
+
+const Schema = Yup.object().shape({
+  verifyCode: Yup.string().required("Hãy nhập mã xác nhận!"),
+});
 
 const initialValues = {
   verifyCode: "",
 };
 
-const ProvideCode = ({ onToNextStep }) => {
+const ProvideCode = ({ onToNextStep, username }) => {
+  const {
+    provideVerifyResponse,
+    provideVerifyError,
+    provideVerifyIsLoading,
+    callProvideVerify,
+  } = provideVerifyCode();
+
+  useEffect(() => {
+    if (provideVerifyResponse) {
+      onToNextStep();
+    } else if (provideVerifyError) {
+      ShowToast(provideVerifyError.data.message);
+    }
+  }, [provideVerifyResponse, provideVerifyError]);
+
   const submitHandler = (values) => {
-    onToNextStep();
+    callProvideVerify({ username: username, verifyID: values.verifyCode });
+    //onToNextStep();
   };
 
   return (
@@ -30,7 +53,7 @@ const ProvideCode = ({ onToNextStep }) => {
       </View>
       <Formik
         initialValues={initialValues}
-        //   validationSchema={}
+        validationSchema={Schema}
         onSubmit={submitHandler}
       >
         {({
@@ -46,6 +69,7 @@ const ProvideCode = ({ onToNextStep }) => {
               light
               mode="outlined"
               label="Mã xác nhận"
+              keyboardType="numeric"
               placeholder="Nhập mã xác nhận"
               leftIconName="vpn-key"
               onChangeText={handleChange("verifyCode")}
@@ -58,7 +82,11 @@ const ProvideCode = ({ onToNextStep }) => {
               }
             />
             <View style={styles.btnGroup}>
-              <PrimaryButton title="Tiếp theo" onPress={handleSubmit} />
+              <PrimaryButton
+                isLoading={provideVerifyIsLoading}
+                title="Tiếp theo"
+                onPress={handleSubmit}
+              />
             </View>
           </Fragment>
         )}
@@ -87,6 +115,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 4,
     borderColor: COLORS.greyLight,
+    marginBottom: 10,
   },
   btnGroup: {
     marginTop: 30,

@@ -74,6 +74,7 @@ const ShopList = ({
           onEndReachedThreshold={0}
           onEndReached={onLoadMore}
         />
+        <View style={{height: 60}}></View>
         <TouchableOpacity
           style={styles.toTopButtonWrapper}
           onPress={toTop}
@@ -106,7 +107,7 @@ const styles = StyleSheet.create({
   },
   toTopButtonWrapper: {
     position: "absolute",
-    bottom: 30,
+    bottom: 80,
     right: 6,
   },
   topTopButton: {

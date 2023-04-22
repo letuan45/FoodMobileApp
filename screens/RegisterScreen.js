@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import FormContainer from "../components/UI/Interactors/FormContainer";
 import { Formik } from "formik";
@@ -6,6 +6,8 @@ import CustomTextInput from "../components/UI/Inputs/CustomTextInput";
 import { RegisterSchema } from "../utils/validation";
 import CustomLongInput from "../components/UI/Inputs/CustomLongInput";
 import PrimaryButton from "../components/UI/Buttons/PrimaryButton";
+import { register } from "../services/RegisterService";
+import ShowToast from "../utils/ShowToast";
 
 const initialLoginValues = {
   username: "",
@@ -18,9 +20,29 @@ const initialLoginValues = {
 };
 
 const RegisterScreen = ({ navigation }) => {
+  const { registerResponse, registerError, registerIsLoading, callRegister } =
+    register();
+
+  useEffect(() => {
+    if (registerResponse) {
+      ShowToast(registerResponse.message);
+      navigation.navigate("LoginSuccessScreen");
+    } else if (registerError) {
+      ShowToast(registerError.data.message);
+    }
+  }, [registerResponse, registerError]);
+
   const handleSubmitRegister = (values) => {
-    navigation.navigate("LoginSuccessScreen");
-    console.log(values);
+    const data = {
+      username: values.username,
+      password: values.password,
+      name: values.name,
+      email: values.email,
+      phone: values.phone,
+      address: values.address,
+    };
+
+    callRegister(data);
   };
 
   return (
@@ -109,6 +131,7 @@ const RegisterScreen = ({ navigation }) => {
                   />
                   <CustomTextInput
                     mode="outlined"
+                    keyboardType="numeric"
                     label="Số điện thoại"
                     placeholder="Nhập số điện thoại"
                     onChangeText={handleChange("phone")}
@@ -129,10 +152,11 @@ const RegisterScreen = ({ navigation }) => {
                       errors.address && touched.address ? errors.address : null
                     }
                   />
-                  <View style={{ height: 200 }} />
+                  <View style={{ height: 250 }} />
                   <View style={styles.btnGroup}></View>
                   <View style={styles.btnWrapper}>
                     <PrimaryButton
+                      isLoading={registerIsLoading}
                       title="Xác nhận đăng ký"
                       onPress={handleSubmit}
                     />

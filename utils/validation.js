@@ -16,7 +16,7 @@ export const RegisterSchema = Yup.object().shape({
 });
 
 export const ChangePasswordSchema = Yup.object().shape({
-  password: Yup.string().required("Hãy nhập mật khẩu của bạn!"),
-  rePassword: Yup.string().required("Hãy nhập mật khẩu của bạn!"),
+  oldPassword: Yup.string().required("Hãy nhập mật khẩu cũ của bạn!"),
   newPassword: Yup.string().required("Hãy nhập mật khẩu mới của bạn!"),
+  repeatPassword: Yup.string().required("Hãy nhập lại mật khẩu mới của bạn!"),
 });

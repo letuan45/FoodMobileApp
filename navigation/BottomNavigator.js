@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import COLORS from "../consts/colors";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 import HomeScreen from "../screens/HomeScreen";
 import CartScreen from "../screens/CartScreen";
 import OrdersScreen from "../screens/OrdersScreen";
@@ -14,10 +14,11 @@ import { cartActions, wishListActions} from "../store";
 import CartLogo from "../components/UI/Decorations/CartLogo";
 import { getWishlist } from "../services/WishlistService";
 import ShowToast from "../utils/ShowToast";
+import SearchScreen from "../screens/SearchScreen";
 
 const Tab = createBottomTabNavigator();
 
-const BottomNavigator = () => {
+const BottomNavigator = ({navigation}) => {
   const dispatch = useDispatch();
   const { getCartRes, getCartErr, callGetCart } = getCart();
   const { wishlistRes, wishlistError, callGetWishlist } = getWishlist();
@@ -89,22 +90,24 @@ const BottomNavigator = () => {
         options={{
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <View
-              style={{
-                height: 60,
-                width: 60,
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: COLORS.white,
-                borderColor: COLORS.orange,
-                borderWidth: 2,
-                borderRadius: 30,
-                top: -20,
-                elevation: 5,
-              }}
-            >
-              <Icon name="search" color={COLORS.orange} size={28} />
-            </View>
+            <Pressable onPress={() => navigation.navigate("SearchScreen")}>
+              <View
+                style={{
+                  height: 60,
+                  width: 60,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: COLORS.white,
+                  borderColor: COLORS.orange,
+                  borderWidth: 2,
+                  borderRadius: 30,
+                  top: -20,
+                  elevation: 5,
+                }}
+              >
+                <Icon name="search" color={COLORS.orange} size={28} />
+              </View>
+            </Pressable>
           ),
         }}
       />

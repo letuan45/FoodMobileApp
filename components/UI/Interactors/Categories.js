@@ -4,33 +4,7 @@ import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import COLORS from "../../../consts/colors";
 import httpClient from "../../../utils/axiosInstance";
 import useAxios from "../../../hooks/useAxios";
-
-const DUMMY_CATEGORIES = [
-  {
-    id_item: 1,
-    name: "Burger",
-  },
-  {
-    id_item: 2,
-    name: "Đồ uống",
-  },
-  {
-    id_item: 3,
-    name: "Đồ ngọt",
-  },
-  {
-    id_item: 4,
-    name: "Pasta",
-  },
-  {
-    id_item: 5,
-    name: "Pizza",
-  },
-  {
-    id_item: 6,
-    name: "Khác",
-  },
-];
+import LoadingSpinner from "../../UI/Interactors/LoadingSpinner";
 
 const icons = [
   <View>
@@ -63,7 +37,7 @@ const icons = [
 
 const getCateURL = "/types";
 
-const Categories = ({ onChangeCate }) => {
+const Categories = ({ onChangeCate, isLoading }) => {
   const { response: cateRes, error: cateErr } = useAxios({
     axiosInstance: httpClient,
     method: "GET",
@@ -91,8 +65,14 @@ const Categories = ({ onChangeCate }) => {
     setActiveCateIndex(+idItem);
   };
 
+
   return (
     <View>
+      {isLoading && (
+        <View style={styles.loadingWrapper}>
+          <LoadingSpinner />
+        </View>
+      )}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -177,6 +157,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 600,
   },
+  loadingWrapper: {
+    marginTop: 10
+  }
 });
 
 export default Categories;

@@ -5,6 +5,7 @@ import ShopList from "../components/Shop/ShopList";
 import useAxios from "../hooks/useAxios";
 import httpClient from "../utils/axiosInstance";
 import ShowToast from "../utils/ShowToast";
+import LoadingSpinner from "../components/UI/Interactors/LoadingSpinner";
 
 const itemPerPage = 12;
 const baseGetItemURl = "/items";
@@ -16,6 +17,7 @@ const HomeScreen = ({ navigation }) => {
   const [numberOfPage, setNumberOfPage] = useState(0);
   const [getItemsURL, setGetItemsURL] = useState(baseGetItemURl);
   const [cateIndex, setCateIndex] = useState(0);
+  const [isFirstTime, setIsFirstTime] = useState(true);
   const {
     response: productsRes,
     isLoading: productsIsLoading,
@@ -37,6 +39,7 @@ const HomeScreen = ({ navigation }) => {
       if (currentPage === 1) {
         setNumberOfPage(Math.ceil(productsRes.totalItems / itemPerPage));
         setRenderProducts(productsRes.itemList);
+        setIsFirstTime(false);
       } else {
         setRenderProducts((oldProducts) => {
           return [...oldProducts, ...productsRes.itemList];
@@ -72,15 +75,18 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ShopList
-        navigation={navigation}
-        items={renderProducts}
-        onLoadMore={loadMoreItems}
-        isLoading={productsIsLoading}
-        atTheEndList={currentPage === numberOfPage}
-        onChangeCate={handleCateChange}
-        error={productsError}
-      />
+      {isFirstTime && productsIsLoading && <LoadingSpinner />}
+      {renderProducts && renderProducts.length > 0 && (
+        <ShopList
+          navigation={navigation}
+          items={renderProducts}
+          onLoadMore={loadMoreItems}
+          isLoading={productsIsLoading}
+          atTheEndList={currentPage === numberOfPage}
+          onChangeCate={handleCateChange}
+          error={productsError}
+        />
+      )}
     </SafeAreaView>
   );
 };

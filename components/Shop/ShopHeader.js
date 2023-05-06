@@ -15,12 +15,12 @@ import PrimaryButtonSmall from "../UI/Buttons/PrimaryButtonSmall";
 import { useSelector } from "react-redux";
 import useAuth from "../../hooks/use-auth";
 
-const ShopHeader = ({ navigation, onChangeCate }) => {
+const ShopHeader = ({ navigation, onChangeCate, isLoading }) => {
   let headerItem;
   useAuth();
   const user = useSelector((state) => state.auth.user);
   let userName = "Khách hàng";
-  if (user) {
+  if (user && user.name) {
     userName = user.name.split(" ")[user.name.split(" ").length - 1];
   }
 
@@ -77,7 +77,7 @@ const ShopHeader = ({ navigation, onChangeCate }) => {
           <Icon name="search" size={28} />
         </View>
       </Pressable>
-      <Categories onChangeCate={onChangeCate} />
+      <Categories onChangeCate={onChangeCate} isLoading={isLoading} />
       <View style={styles.banner}>
         <Image
           style={styles.bannerImage}

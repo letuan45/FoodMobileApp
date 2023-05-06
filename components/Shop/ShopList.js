@@ -42,9 +42,9 @@ const ShopList = ({
   const toTop = () => {
     listRef.current.scrollToOffset({ animated: true, offset: 0 });
   };
-  let content = null;
+  let content;
 
-  if (!isLoading && (!products || products.length === 0) && error) {
+  if (!isLoading && (!products || products.length === 0) || error) {
     content = (
       <View style={{ alignItems: "center", justifyContent: "center" }}>
         <Image
@@ -63,7 +63,11 @@ const ShopList = ({
           ref={listRef}
           data={products}
           ListHeaderComponent={
-            <ShopHeader navigation={navigation} onChangeCate={onChangeCate} />
+            <ShopHeader
+              isLoading={isLoading}
+              navigation={navigation}
+              onChangeCate={onChangeCate}
+            />
           }
           ListFooterComponent={<BottomIndicator atTheEndList={atTheEndList} />}
           numColumns={2}
@@ -74,7 +78,7 @@ const ShopList = ({
           onEndReachedThreshold={0}
           onEndReached={onLoadMore}
         />
-        <View style={{height: 60}}></View>
+        <View style={{ height: 60 }}></View>
         <TouchableOpacity
           style={styles.toTopButtonWrapper}
           onPress={toTop}

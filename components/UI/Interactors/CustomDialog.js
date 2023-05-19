@@ -23,7 +23,7 @@ const CustomDialog = (props) => {
       <TouchableOpacity style={styles.backDrop} onPress={props.onClose} />
       <View
         style={{
-          height: isBigModal ? 350 : 150,
+          height: isBigModal ? 540 : 150,
           width: isBigModal ? WIDTH - 40 : WIDTH - 80,
           ...styles.modal,
         }}

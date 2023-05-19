@@ -90,7 +90,6 @@ const OrdersScreen = ({ navigation }) => {
     );
   } else {
     const ordersCount = orders.length;
-    console.log("reload", orders)
     const totalPrice = orders.reduce((totalPrice, order) => {
       if (order.status === 1) {
         return totalPrice + order.total;
@@ -133,16 +132,31 @@ const OrdersScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.header}>Lịch sử đơn hàng</Text>
-      <TouchableOpacity
-        style={{ alignItems: "center", marginTop: 10 }}
-        onPress={() => {
-          refetchOrders();
-        }}
-      >
-        <View style={styles.reloadButton}>
-          <Icon name="refresh" size={30} color={COLORS.white} />
-        </View>
-      </TouchableOpacity>
+      <View style={styles.buttonWrapper}>
+        <TouchableOpacity
+          style={{ alignItems: "center", marginTop: 10 }}
+          onPress={() => {
+            refetchOrders();
+          }}
+        >
+          <View style={styles.reloadButton}>
+            <Icon name="refresh" size={30} color={COLORS.white} />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{ alignItems: "center", marginTop: 10 }}
+          onPress={() => {navigation.navigate("AnalyticsScreen");}}
+        >
+          <View
+            style={{
+              ...styles.reloadButton,
+              backgroundColor: COLORS.milkBackground,
+            }}
+          >
+            <Icon name="bar-chart" size={30} color={COLORS.red} />
+          </View>
+        </TouchableOpacity>
+      </View>
       <View style={styles.innerContainer}>{content}</View>
     </SafeAreaView>
   );
@@ -242,7 +256,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
+    marginHorizontal: 8
   },
+  buttonWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  }
 });
 
 export default OrdersScreen;

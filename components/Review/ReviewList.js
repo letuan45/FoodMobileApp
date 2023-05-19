@@ -5,6 +5,7 @@ import { Rating } from "react-native-ratings";
 const userImage = require("../../assets/icons/user.png");
 
 const ReviewItem = ({ item }) => {
+  console.log(item);
   return (
     <View style={styles.reviewItem}>
       <Image source={userImage} style={styles.userImage} />

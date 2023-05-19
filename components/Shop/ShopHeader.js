@@ -121,9 +121,9 @@ const styles = StyleSheet.create({
     color: COLORS.grey,
   },
   userImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
   },
   searchContainer: {
     marginTop: 20,

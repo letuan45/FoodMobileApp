@@ -103,8 +103,8 @@ const styles = StyleSheet.create({
   },
   itemsContainer: {
     flexWrap: "wrap",
-    height: deviceHeight,
-    // height: deviceHeight - variables.bottomNavigateHeight,
+    //height: deviceHeight,
+    height: deviceHeight + 60,
   },
   loadingIndiWrapper: {
     marginBottom: 50,

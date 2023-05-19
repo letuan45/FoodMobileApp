@@ -6,6 +6,7 @@ import {
   View,
   Image,
   Pressable,
+  TouchableOpacity,
 } from "react-native";
 import BackButton from "../components/UI/Buttons/BackButton";
 import PrimaryButton from "../components/UI/Buttons/PrimaryButton";
@@ -58,10 +59,15 @@ const AccountScreen = ({ navigation }) => {
       <View style={styles.card}>
         <View style={styles.imageWrapper}>
           <Image source={userImage} style={styles.userImage} />
+          <TouchableOpacity>
+            <View style={styles.changeImageBtn}>
+              <Icon name="photo-camera" size={28} color={COLORS.orange} />
+            </View>
+          </TouchableOpacity>
         </View>
         <Text
           style={{
-            top: "-5%",
+            top: "-6%",
             fontSize: 20,
             textAlign: "center",
             fontWeight: 600,
@@ -83,8 +89,18 @@ const AccountScreen = ({ navigation }) => {
             <Text style={styles.infor}>Hot-line: {user.phone}</Text>
           </View>
           <View style={{ ...styles.infoItem, borderTopWidth: 0 }}>
-            <Icon name="call" size={28} color={COLORS.green} />
+            <Icon name="home" size={28} color={COLORS.green} />
             <Text style={styles.infor}>{user.address}</Text>
+          </View>
+          <View style={{ alignItems: "center" }}>
+            <Pressable
+              style={styles.changePassBtn}
+              onPress={() => {
+                navigation.navigate("ChangePasswordScreen");
+              }}
+            >
+              <Text style={{ fontSize: 16 }}>Sửa thông tin</Text>
+            </Pressable>
           </View>
           <View style={{ alignItems: "center" }}>
             <Pressable
@@ -138,21 +154,22 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     elevation: 10,
     borderRadius: 8,
-    height: 540,
+    height: 550,
   },
   imageWrapper: {
     alignItems: "center",
-    top: -40,
+    position: "relative",
+    top: -50,
   },
   userImage: {
-    width: 110,
-    height: 110,
+    width: 120,
+    height: 120,
   },
   btnWrapper: {
     position: "absolute",
     width: "100%",
     paddingHorizontal: 40,
-    top: 660,
+    top: 670,
     left: 0,
   },
   infoItem: {
@@ -180,6 +197,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 20,
+  },
+  changeImageBtn: {
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    width: 120,
+    height: 60,
+    top: -60,
+    left: -60,
+    position: "absolute",
+    borderBottomLeftRadius: 60,
+    borderBottomRightRadius: 60,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

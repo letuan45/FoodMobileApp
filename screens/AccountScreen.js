@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   StyleSheet,
@@ -16,12 +16,17 @@ import { useSelector, useDispatch } from "react-redux";
 import { authActions, cartActions } from "../store";
 import { LogoutAuth } from "../services/Authentication";
 import ShowToast from "../utils/ShowToast";
+import CustomDialog from "../components/UI/Interactors/CustomDialog";
+import EditAvatar from "../components/User/EditAvatar";
 
 const userImage = require("../assets/icons/user.png");
 
 const AccountScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
+  const [avatarModalIsOpen, setAvatarModalIsOpen] = useState(false);
+
+  console.log(user);
 
   const { logoutResponse, logoutError, logoutIsLoading, callLogout } =
     LogoutAuth();
@@ -49,8 +54,25 @@ const AccountScreen = ({ navigation }) => {
     navigation.navigate("Home");
   }
 
+  const handleOpenAvatarModal = () => {
+    setAvatarModalIsOpen(true);
+  };
+
+  const handleCloseAvatarModal = () => {
+    setAvatarModalIsOpen(false);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+      {avatarModalIsOpen && (
+        <CustomDialog
+          title="Chọn ảnh từ thiết bị"
+          content={<EditAvatar onClose={handleCloseAvatarModal} />}
+          onClose={handleCloseAvatarModal}
+          isOneButton
+          isMediumModal
+        />
+      )}
       <View style={styles.backDrop} />
       <View style={styles.header}>
         <BackButton navigation={navigation} />
@@ -58,8 +80,11 @@ const AccountScreen = ({ navigation }) => {
       </View>
       <View style={styles.card}>
         <View style={styles.imageWrapper}>
-          <Image source={userImage} style={styles.userImage} />
-          <TouchableOpacity>
+          {!user.image && <Image source={userImage} style={styles.userImage} />}
+          {user.image && (
+            <Image source={{ uri: user.image }} style={styles.userImage} />
+          )}
+          <TouchableOpacity onPress={handleOpenAvatarModal}>
             <View style={styles.changeImageBtn}>
               <Icon name="photo-camera" size={28} color={COLORS.orange} />
             </View>
@@ -96,7 +121,7 @@ const AccountScreen = ({ navigation }) => {
             <Pressable
               style={styles.changePassBtn}
               onPress={() => {
-                navigation.navigate("ChangePasswordScreen");
+                navigation.navigate("ChangeProfileScreeen");
               }}
             >
               <Text style={{ fontSize: 16 }}>Sửa thông tin</Text>
@@ -164,6 +189,7 @@ const styles = StyleSheet.create({
   userImage: {
     width: 120,
     height: 120,
+    borderRadius: 60,
   },
   btnWrapper: {
     position: "absolute",

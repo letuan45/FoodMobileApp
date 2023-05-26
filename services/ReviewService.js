@@ -24,7 +24,7 @@ export const reviewProduct = () => {
     axiosFetch: callAxiosReview,
   } = useAxiosFunction();
 
-  const callReview = ({ productId, reviewScore, comment, orderId }) => {
+  const callReview = ({ productId, reviewScore, comment, orderId, imageURL}) => {
     callAxiosReview({
       axiosInstance: httpClient,
       url: `/reviews/${productId}`,
@@ -33,6 +33,7 @@ export const reviewProduct = () => {
         data: {
           rating: reviewScore,
           comment: comment,
+          image: imageURL ? imageURL : ""
         },
         params: {
           id_order: orderId,

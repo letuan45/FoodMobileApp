@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import COLORS from "../../../consts/colors";
 import Z_INDEXES from "../../../consts/zIndexes";
+import variables from "../../../consts/variables";
 
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
@@ -17,13 +18,18 @@ const CustomDialog = (props) => {
   };
 
   const isBigModal = props.bigModal;
+  const isMediumModal = props.mediumModal;
+
+  let height = 150;
+  if (isBigModal) height = 540;
+  else height = 400;
 
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.backDrop} onPress={props.onClose} />
       <View
         style={{
-          height: isBigModal ? 540 : 150,
+          height: height,
           width: isBigModal ? WIDTH - 40 : WIDTH - 80,
           ...styles.modal,
         }}
@@ -41,12 +47,14 @@ const CustomDialog = (props) => {
             >
               <Text style={styles.dialogBtnContent}>Hủy</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.dialogButton}
-              onPress={handleAgreement}
-            >
-              <Text style={styles.dialogBtnContent}>Xác nhận</Text>
-            </TouchableOpacity>
+            {!props.isOneButton && (
+              <TouchableOpacity
+                style={styles.dialogButton}
+                onPress={handleAgreement}
+              >
+                <Text style={styles.dialogBtnContent}>Xác nhận</Text>
+              </TouchableOpacity>
+            )}
           </View>
         )}
       </View>
@@ -68,7 +76,7 @@ const styles = StyleSheet.create({
   },
   backDrop: {
     width: "100%",
-    height: "100%",
+    height: HEIGHT + 100,
     position: "absolute",
     zIndex: Z_INDEXES.backDrop,
     backgroundColor: "black",

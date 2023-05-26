@@ -20,3 +20,9 @@ export const ChangePasswordSchema = Yup.object().shape({
   newPassword: Yup.string().required("Hãy nhập mật khẩu mới của bạn!"),
   repeatPassword: Yup.string().required("Hãy nhập lại mật khẩu mới của bạn!"),
 });
+
+export const changeProfileSchema = Yup.object().shape({
+  name: Yup.string().required("Hãy nhập tên!"),
+  phone: Yup.string().required("Hãy nhập SĐT của bạn!"),
+  address: Yup.string().required("Hãy nhập địa chỉ của bạn!"),
+});

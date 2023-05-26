@@ -5,7 +5,6 @@ import { Rating } from "react-native-ratings";
 const userImage = require("../../assets/icons/user.png");
 
 const ReviewItem = ({ item }) => {
-  console.log(item);
   return (
     <View style={styles.reviewItem}>
       <Image source={userImage} style={styles.userImage} />
@@ -31,12 +30,16 @@ const ReviewItem = ({ item }) => {
         <Text style={{ fontSize: 18, color: COLORS.primaryDark }}>
           "{item.comment}"
         </Text>
+        {item.image && (
+          <Image style={styles.reviewImage} source={{ uri: item.image }} />
+        )}
       </View>
     </View>
   );
 };
 
 const ReviewList = ({ items }) => {
+  console.log(items)
   if (items.length === 0) {
     return (
       <Text
@@ -83,6 +86,10 @@ const styles = StyleSheet.create({
   reviewInfo: {
     marginLeft: 10,
   },
+  reviewImage: {
+    width: 120,
+    height: 120
+  }
 });
 
 export default ReviewList;

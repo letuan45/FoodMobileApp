@@ -15,7 +15,6 @@ import ShowToast from "../../utils/ShowToast";
 import { reviewProduct } from "../../services/ReviewService";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import * as ImagePicker from "expo-image-picker";
-import Constants from "expo-constants";
 
 const ReviewForm = ({ onClose, onReload, productId, orderId }) => {
   const [ratingValue, setRatingValue] = useState(0);
@@ -49,6 +48,7 @@ const ReviewForm = ({ onClose, onReload, productId, orderId }) => {
         reviewScore: ratingValue,
         comment: commentValue,
         orderId: orderId,
+        imageURL: image
       });
     }
   };

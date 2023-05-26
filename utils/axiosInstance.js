@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const httpClient = axios.create({
-  baseURL: "http://192.168.1.14:3005",
+  baseURL: "http://192.168.1.13:3005",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",

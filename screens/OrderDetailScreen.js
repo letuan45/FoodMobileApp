@@ -230,9 +230,6 @@ const OrderDetailScreen = ({ navigation, route }) => {
                   Đặt lúc: {orderDetail.datetime}
                 </Text>
               </View>
-              <Text style={{ textAlign: "center" }}>
-                Địa chỉ: {user.address}
-              </Text>
               <View style={styles.itemsWrapper}>
                 <FlatList
                   data={detailItems}
@@ -302,6 +299,7 @@ const styles = StyleSheet.create({
   detailContent: {
     top: 50,
     position: "absolute",
+    width: "100%",
     paddingVertical: 10,
   },
   headerContentWrapper: {

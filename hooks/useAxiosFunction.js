@@ -9,6 +9,7 @@ const useAxiosFunction = () => {
 
   const axiosFetch = useCallback(async (configObj) => {
     const { axiosInstance, method, url, requestConfig = {} } = configObj;
+
     const token = await getStringData("token");
     try {
       setLoading(true);

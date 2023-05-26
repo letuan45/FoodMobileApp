@@ -20,6 +20,7 @@ import ForgetPasswordScreen from "./screens/ForgetPasswordScreen";
 import ForgetSuccess from "./components/ForgetPassSteps/ForgetSuccess";
 import SearchScreen from "./screens/SearchScreen";
 import AnalyticsScreen from "./screens/AnalyticsScreen";
+import ChangeProfileScreen from "./screens/ChangeProfileScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -65,6 +66,10 @@ export default function App() {
           <Stack.Screen name="ForgetSuccess" component={ForgetSuccess} />
           <Stack.Screen name="SearchScreen" component={SearchScreen} />
           <Stack.Screen name="AnalyticsScreen" component={AnalyticsScreen} />
+          <Stack.Screen
+            name="ChangeProfileScreeen"
+            component={ChangeProfileScreen}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

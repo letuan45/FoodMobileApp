@@ -15,6 +15,8 @@ import PrimaryButtonSmall from "../UI/Buttons/PrimaryButtonSmall";
 import { useSelector } from "react-redux";
 import useAuth from "../../hooks/use-auth";
 
+import userImage from "../../assets/icons/user.png";
+
 const ShopHeader = ({ navigation, onChangeCate, isLoading }) => {
   let headerItem;
   useAuth();
@@ -60,10 +62,12 @@ const ShopHeader = ({ navigation, onChangeCate, isLoading }) => {
               navigation.navigate("AccountScreen");
             }}
           >
-            <Image
-              style={styles.userImage}
-              source={require("../../assets/icons/user.png")}
-            />
+            {!user.image && (
+              <Image source={userImage} style={styles.userImage} />
+            )}
+            {user.image && (
+              <Image source={{ uri: user.image }} style={styles.userImage} />
+            )}
           </TouchableOpacity>
         )}
       </View>

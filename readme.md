@@ -17,4 +17,4 @@ Thư viện sử dụng: React Native, Formik, React Native Paper, Axios, Redux,
 # Hướng dẫn chạy đồ án<br/>
 + cd vào thư mục đồ án và chạy npx expo start<br/>
 + Nếu đang có máy ảo chạy sẵn hoặc điện thoại đang cắm qua cổng, chỉ cần bấm nút a để expo cài đặt (nếu chưa có) và chạy<br/>
-+ Nếu máy có ứng dụng Expo Go, mở ứng dụng quét mã QR trên terminal để chạy (Yêu cầu: máy tính và điện thoại phải kết nối cùng 1 mạng)
++ Nếu máy có ứng dụng Expo Go (tải lại CH Play nếu không có), mở ứng dụng quét mã QR trên terminal để chạy (Yêu cầu: máy tính và điện thoại phải kết nối cùng 1 mạng)

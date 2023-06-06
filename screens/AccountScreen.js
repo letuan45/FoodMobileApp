@@ -26,8 +26,6 @@ const AccountScreen = ({ navigation }) => {
   const user = useSelector((state) => state.auth.user);
   const [avatarModalIsOpen, setAvatarModalIsOpen] = useState(false);
 
-  console.log(user);
-
   const { logoutResponse, logoutError, logoutIsLoading, callLogout } =
     LogoutAuth();
 

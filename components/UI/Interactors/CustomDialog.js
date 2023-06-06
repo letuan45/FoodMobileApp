@@ -17,12 +17,14 @@ const CustomDialog = (props) => {
     props.onAgree(props.itemId);
   };
 
-  const isBigModal = props.bigModal;
-  const isMediumModal = props.mediumModal;
+  const {isBigModal} = props;
+  const {isMediumModal} = props;
+
+  console.log(isMediumModal)
 
   let height = 150;
   if (isBigModal) height = 540;
-  else height = 400;
+  else if(isMediumModal) height = 400;
 
   return (
     <View style={styles.container}>

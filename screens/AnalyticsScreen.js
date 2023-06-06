@@ -22,7 +22,8 @@ const AnalyticsScreen = ({ navigation }) => {
       for (order of successOrders) {
         const date = new Date(order.datetime);
         const dayNum = date.getDay();
-        data[dayNum - 2] += order.total;
+        data[dayNum-1] += order.total;
+        
       }
       setRenderBarChartData(data);
 

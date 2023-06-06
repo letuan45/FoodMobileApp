@@ -13,3 +13,10 @@
 + Cập nhật: Chart thống kê, image picker
 <br/>
 Thư viện sử dụng: React Native, Formik, React Native Paper, Axios, Redux, React Natice Chart Kit, Expo Image Picker
+<br/>
+# Hướng dẫn chạy đồ án
++ Trước tiên cần tải và start đồ án Back-end của nhóm
++ Thay đổi ip trong utils -> axiosInstance -> thay đổi thành ip của máy tính cá nhân trong base URL
++ cd vào thư mục đồ án và chạy npx expo start
++ Nếu đang có máy ảo chạy sẵn hoặc điện thoại đang cắm, chỉ cần bấm nút a để expo cài đặt (nếu chưa có) và chạy
++ Nếu máy có ứng dụng Expo Go, mở ứng dụng quét mã QR trên terminal để chạy (Yêu cầu: máy tính và điện thoại phải kết nối cùng 1 mạng)
